@@ -1,0 +1,2 @@
+Yolo Sign Classes
+['Taghadom' , 'Chap Mamnoo' , 'Rast Mamnoo' , 'SL30' , 'Tavaghof Mamnoo' , 'Vorood Mamnoo' , 'Mostaghim' , 'SL40' , 'SL50' , 'SL60' , 'SL70' , 'SL80' , 'SL100' , 'No U-Turn']
