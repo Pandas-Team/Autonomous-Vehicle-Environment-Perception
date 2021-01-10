@@ -20,7 +20,7 @@ class ArgumentsBase(object):
         self.ap.add_argument('--weights-sign'    , type=str, default='weights/Best_Sign_Model_TV.pt', help='sign detector weights')
         self.ap.add_argument('--disp-detector', type=str, default='weights/model_full.pth', help='disparity model weights')
         self.ap.add_argument('--lane-detector', type=str, default='weights/296_tensor(1.6947)_lane_detection_network.pkl', help='lane detector model')
-        self.ap.add_argument('--video', type=str, default='Rah.mov', help = 'The input video')
+        self.ap.add_argument('--video', type=str, default='test.mov', help = 'The input video')
         self.ap.add_argument('--rotate', action = 'store_true', default='Rah.mov', help = 'The input video')
         self.ap.add_argument('--save', action= 'store_true', help = 'Saving the output video')
         self.ap.add_argument('--noshow', action= 'store_true', help =  'Do not Show the output frames')

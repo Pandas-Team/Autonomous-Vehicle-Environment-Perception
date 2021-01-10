@@ -63,10 +63,7 @@ while(cap.isOpened()):
         frame = lane_detector.Testing(frame)        
         disparity, seg_img = disparity_detector.inference(frame)
 
-        try:
-            frame = apply_mask(frame, seg_img)
-        except:
-            pass
+        frame = apply_mask(frame, seg_img)
 
         # plotting Yolo Ouput
         for obj in yoloOutput:
