@@ -16,16 +16,15 @@ disparity_detector = Inference('weights/model_full.pth')
 detector_sign = YOLO_Sign('weights/Best_Sign_Model_TV.pt')
 
 #Video Writer
-cap = cv2.VideoCapture("/root/Documents/LaneATT/PINet_new/CULane/test.mov")
+cap = cv2.VideoCapture("/media/milad/Programms/Resources/4.Projects/Rahneshan-Golabi-Group/Rah.mov")
 
 w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-out = cv2.VideoWriter('./filename.mov',  
-                        cv2.VideoWriter_fourcc(*'mp4v'), 
-                        15, (int(h), int(w)))
+# out = cv2.VideoWriter('./filename.mov',  
+#                         cv2.VideoWriter_fourcc(*'mp4v'), 
+#                         15, (int(h), int(w)))
 
-# names = ['person', 'car', 'bus', 'truck', 'traffic light']
 names = {
         'person': 0,
         'car' : 1,
@@ -85,11 +84,11 @@ while(cap.isOpened()):
             xyxy = [sign['bbox'][0][0], sign['bbox'][0][1], sign['bbox'][1][0], sign['bbox'][1][1]]
             plot_one_box(xyxy, frame, label=obj['label'], color=colors_signs[obj['cls']], line_thickness=3)
         
-        out.write(frame)
+        # out.write(frame)
         
-        # cv2.imshow('frame',frame)
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break
+        cv2.imshow('frame',frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     else:
         break
     

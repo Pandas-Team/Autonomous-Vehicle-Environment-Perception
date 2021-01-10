@@ -1,1 +1,4 @@
-weights/*
+weights/
+*.pt
+*.mp4
+*.mov
