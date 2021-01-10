@@ -110,15 +110,13 @@ while(cap.isOpened()):
         s = "FPS : "+ str(fps)
         if opt.fps:
             cv2.putText(frame, s, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), thickness= 2)
-
+        
+        #Cross Walk Lines
+        frame = horiz_lines(main_frame, frame)
         # Saving the output
         if opt.save:
             out.write(frame)
         
-        #Cross Walk Lines
-        frame = horiz_lines(main_frame, frame)
-
-
         if not opt.noshow:
             cv2.imshow('frame',frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -126,15 +124,6 @@ while(cap.isOpened()):
     else:
         break
 
-
-    
-
-
-
-
-    # t2 = t() #End of frame time
-    # fps = np.round(1 / (t2-t1) , 3)   #Running FPS
-    # cv2.putText(img, s, (0, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0))
     sys.stdout.write(
           "\r[Input Video : %s] [%d/%d Fames Processed] [Saving %s] [Show %s] [FPS : %f]"
           % (
