@@ -345,9 +345,7 @@ class Agent(nn.Module):
     #####################################################
     def predict_lanes_test(self, inputs):
         inputs = torch.from_numpy(inputs).float() 
-        #inputs = Variable(inputs).cuda()
-        inputs = Variable(inputs)
-
+        inputs = Variable(inputs).to(device)
         outputs, features = self.lane_detection_network(inputs)
 
         return outputs
