@@ -3,3 +3,4 @@ weights/
 *.mp4
 *.mov
 *.npy
+*.ipynb

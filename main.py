@@ -4,6 +4,7 @@ from elements.SGD import Inference
 from elements.asset import cityscape_xyz, kitti_xyz, apply_mask
 from utils.plots import plot_one_box
 import matplotlib.pyplot as plt
+from elements.asset import horiz_lines, detect_lines
 import numpy as np
 import cv2
 import json
@@ -65,6 +66,7 @@ while(cap.isOpened()):
         t1 = t() #Start Time
         # if opt.rotate:
         frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        main_frame = frame.copy()
         yoloOutput = detector.detect(frame)
         signOutput = sign_detector.detect_sign(frame)
         frame = lane_detector.Testing(frame)        
@@ -113,12 +115,22 @@ while(cap.isOpened()):
         if opt.save:
             out.write(frame)
         
+        #Cross Walk Lines
+        frame = horiz_lines(main_frame, frame)
+
+
         if not opt.noshow:
             cv2.imshow('frame',frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     else:
         break
+
+
+    
+
+
+
 
     # t2 = t() #End of frame time
     # fps = np.round(1 / (t2-t1) , 3)   #Running FPS
