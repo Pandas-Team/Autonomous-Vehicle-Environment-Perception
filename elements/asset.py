@@ -34,14 +34,15 @@ def horiz_lines(input_frame, out_image):
         xmin,xmax = x
         ymin,ymax = y.astype(int)
         out_points = np.array([xmin,ymin,xmax,ymax])
-        if out_points is not None:
-            out_image=cv2.line(out_image, (out_points[0],out_points[1]), (out_points[2],out_points[3]), [0,0,255], 5)
+        
         test_img = np.zeros_like(mask)
         test_img[560:, 230:1100] = mask[560:, 230:1100]
         points,_ = cv2.findContours(test_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         for point in points:
-            if cv2.contourArea(point)>3700:
-                cv2.fillPoly(out_image, pts =[point], color=(0,0,255))
+            if cv2.contourArea(point)>2500:
+                cv2.fillPoly(out_image, pts =[point], color=(0,255,0))
+        if out_points is not None:
+            out_image=cv2.line(out_image, (out_points[0],out_points[1]), (out_points[2],out_points[3]), [0,0,255], 5)
 
     return out_image
 
