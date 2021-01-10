@@ -1,3 +1,15 @@
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--weights-detector', type=str, default='weights/yolov5m.pt', help='weights for the main yolo detector')
+parser.add_argument('--weights-sign'    , type=str, default='weights/Best_Sign_Model_TV.pt', help='sign detector weights')
+parser.add_argument('--disp-detector', type=str, default='weights/model_full.pth', help='disparity model weights')
+parser.add_argument('--lane-detector', type=str, default='weights/296_tensor(1.6947)_lane_detection_network.pkl', help='lane detector model')
+parser.add_argument('--video', type=str, default='Rah.mov', help = 'The input video')
+# parser.add_argument('--rotate', type=str, default='Rah.mov', help = 'The input video')
+parser.add_argument('--nosave', action= 'store_false', help = 'Saving the output video')
+parser.add_argument('--noshow', action= 'store_false', help =  'Show the output frames')
+args = parser.parse_args()
+
 from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
@@ -10,20 +22,28 @@ import json
 import datetime
 import random
 
-detector = YOLO('weights/yolov5m.pt')
-lane_detector = LaneDetection('weights/296_tensor(1.6947)_lane_detection_network.pkl')
-disparity_detector = Inference('weights/model_full.pth')
-detector_sign = YOLO_Sign('weights/Best_Sign_Model_TV.pt')
+
+
+
+if args.noshow and args.nosave:
+    print("You're not getting any outputs!")
+
+
+detector = YOLO(args.weights_detector)
+lane_detector = LaneDetection(args.lane_detector)
+disparity_detector = Inference(args.disp_detector)
+sign_detector = YOLO_Sign(args.weights_sign)
 
 #Video Writer
-cap = cv2.VideoCapture("/media/milad/Programms/Resources/4.Projects/Rahneshan-Golabi-Group/Rah.mov")
+if args.nosave:
+    cap = cv2.VideoCapture("/media/milad/Programms/Resources/4.Projects/Rahneshan-Golabi-Group/Rah.mov")
 
-w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-# out = cv2.VideoWriter('./filename.mov',  
-#                         cv2.VideoWriter_fourcc(*'mp4v'), 
-#                         15, (int(h), int(w)))
+    out = cv2.VideoWriter('./filename.mov',  
+                            cv2.VideoWriter_fourcc(*'mp4v'), 
+                            30, (int(h), int(w)))
 
 names = {
         'person': 0,
@@ -44,7 +64,7 @@ while(cap.isOpened()):
     if ret:
         frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
         yoloOutput = detector.detect(frame)
-        sinOutput = detector_sign.detect_sign(frame)
+        sinOutput = sign_detector.detect_sign(frame)
         frame = lane_detector.Testing(frame)        
         disparity, seg_img = disparity_detector.inference(frame)
 
@@ -82,15 +102,19 @@ while(cap.isOpened()):
 
         for sign in sinOutput:
             xyxy = [sign['bbox'][0][0], sign['bbox'][0][1], sign['bbox'][1][0], sign['bbox'][1][1]]
-            plot_one_box(xyxy, frame, label=obj['label'], color=colors_signs[obj['cls']], line_thickness=3)
+            plot_one_box(xyxy, frame, label=obj['label'], color=colors_signs[sign['cls']], line_thickness=3)
         
-        # out.write(frame)
+        # Saving the output
+        if args.nosave:
+            out.write(frame)
         
-        cv2.imshow('frame',frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        if args.noshow:
+            cv2.imshow('frame',frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
     else:
         break
     
 cap.release()
-cv2.destroyAllWindows()
+if args.noshow:
+    cv2.destroyAllWindows()

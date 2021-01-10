@@ -70,11 +70,13 @@ class Inference:
             to_load = torch.load(self.model_path)
             for (k, v) in to_load.items():
                 if k not in state:
-                    print(f"    - WARNING: Model file contains unknown key {k} ({list(v.shape)})")
+                    # print(f"    - WARNING: Model file contains unknown key {k} ({list(v.shape)})")
+                    pass
 
             for (k, v) in state.items():
                 if k not in to_load:
-                    print(f"    - WARNING: Model file does not contain key {k} ({list(v.shape)})")
+                    # print(f"    - WARNING: Model file does not contain key {k} ({list(v.shape)})")
+                    pass
 
                 else:
                     state[k] = to_load[k]
