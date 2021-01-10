@@ -53,7 +53,7 @@ class Inference:
                        )
 
     def init_model(self):
-        print("Init Model...")
+        
         sgdepth = SGDepth
 
         with torch.no_grad():

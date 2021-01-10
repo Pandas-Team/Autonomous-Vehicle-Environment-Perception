@@ -12,8 +12,8 @@ from time import time as t
 import datetime
 import random
 import sys
-
 from SGDepth.arguments import InferenceEvaluationArguments
+
 opt = InferenceEvaluationArguments().parse()
 
 
@@ -37,7 +37,7 @@ if opt.save:
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    out = cv2.VideoWriter('filename.mov',  
+    out = cv2.VideoWriter(opt.output_name,  
                             cv2.VideoWriter_fourcc(*'mp4v'), 
                             opt.outputfps, (int(h), int(w)))
 
@@ -79,7 +79,7 @@ while(cap.isOpened()):
             coloraaaa = [255,0,0]
             xyxy = [obj['bbox'][0][0], obj['bbox'][0][1], obj['bbox'][1][0], obj['bbox'][1][1]]
             
-            if obj['label'] =='car' or obj['label'] == 'truck':
+            if obj['label'] =='car' or obj['label'] == 'truck' or obj['label'] == 'bus':
                 x_pts = (obj['bbox'][0][0]+obj['bbox'][1][0])/2
                 y_pts = (obj['bbox'][0][1]+obj['bbox'][1][1])/2
 
@@ -125,7 +125,7 @@ while(cap.isOpened()):
         break
 
     sys.stdout.write(
-          "\r[Input Video : %s] [%d/%d Fames Processed] [Saving %s] [Show %s] [FPS : %f]"
+          "\r[Input Video : %s] [%d/%d Frames Processed] [Saving %s] [Show %s] [FPS : %f]"
           % (
               opt.video,
               frame_num,

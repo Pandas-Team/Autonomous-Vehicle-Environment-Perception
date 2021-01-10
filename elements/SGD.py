@@ -46,7 +46,7 @@ class Inference:
                        ('CLS_MCYCLE', (0, 0, 230)),
                        ('CLS_BCYCLE', (119, 11, 32)),
                        )
-        print("Init Model...")
+        
         sgdepth = SGDepth
 
         with torch.no_grad():

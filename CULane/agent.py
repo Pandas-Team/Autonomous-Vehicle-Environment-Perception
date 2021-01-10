@@ -42,8 +42,6 @@ class Agent(nn.Module):
 
         self.hard_sampling = hard_sampling()
 
-        print("model parameters: ")
-        print(self.count_parameters(self.lane_detection_network))
 
     def count_parameters(self, model):
 	    return sum(p.numel() for p in model.parameters() if p.requires_grad)

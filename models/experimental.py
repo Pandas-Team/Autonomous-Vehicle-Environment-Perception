@@ -116,7 +116,6 @@ def attempt_load(weights, map_location=None):
     for w in weights if isinstance(weights, list) else [weights]:
         #attempt_download(w)
         model.append(torch.load(w, map_location=map_location)['model'].float().fuse().eval())  # load FP32 model
-        print('load!!!!!!!!!!!!!!!!!!')
     # Compatibility updates
     for m in model.modules():
         if type(m) in [nn.Hardswish, nn.LeakyReLU, nn.ReLU, nn.ReLU6]:
