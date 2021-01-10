@@ -1,15 +1,3 @@
-import argparse
-parser = argparse.ArgumentParser()
-parser.add_argument('--weights-detector', type=str, default='weights/yolov5m.pt', help='weights for the main yolo detector')
-parser.add_argument('--weights-sign'    , type=str, default='weights/Best_Sign_Model_TV.pt', help='sign detector weights')
-parser.add_argument('--disp-detector', type=str, default='weights/model_full.pth', help='disparity model weights')
-parser.add_argument('--lane-detector', type=str, default='weights/296_tensor(1.6947)_lane_detection_network.pkl', help='lane detector model')
-parser.add_argument('--video', type=str, default='Rah.mov', help = 'The input video')
-# parser.add_argument('--rotate', type=str, default='Rah.mov', help = 'The input video')
-parser.add_argument('--nosave', action= 'store_false', help = 'Saving the output video')
-parser.add_argument('--noshow', action= 'store_false', help =  'Show the output frames')
-args = parser.parse_args()
-
 from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
@@ -21,27 +9,33 @@ import cv2
 import json
 import datetime
 import random
+import sys
+
+from SGDepth.arguments import InferenceEvaluationArguments
+opt = InferenceEvaluationArguments().parse()
+
+
+if opt.noshow and not opt.save:
+    print("You're not getting any outputs!!\nExit")
+    sys.exit()
 
 
 
-
-if args.noshow and args.nosave:
-    print("You're not getting any outputs!")
-
-
-detector = YOLO(args.weights_detector)
-lane_detector = LaneDetection(args.lane_detector)
-disparity_detector = Inference(args.disp_detector)
-sign_detector = YOLO_Sign(args.weights_sign)
+detector = YOLO(opt.weights_detector)
+lane_detector = LaneDetection(opt.lane_detector)
+disparity_detector = Inference(opt.disp_detector)
+sign_detector = YOLO_Sign(opt.weights_sign)
 
 #Video Writer
-if args.nosave:
-    cap = cv2.VideoCapture("/media/milad/Programms/Resources/4.Projects/Rahneshan-Golabi-Group/Rah.mov")
+cap = cv2.VideoCapture(opt.video)
+frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+print(frame_count)
 
+if opt.save:
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    out = cv2.VideoWriter('./filename.mov',  
+    out = cv2.VideoWriter('filename.mov',  
                             cv2.VideoWriter_fourcc(*'mp4v'), 
                             30, (int(h), int(w)))
 
@@ -57,11 +51,12 @@ signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
          'Vorood Mamnoo', 'Mostaghom', 'SL40', 'SL50', 'SL60', 'SL70', 'SL80', 'SL100', 'No U-Turn']
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
 
-
+frame_num = 0
 while(cap.isOpened()):
     ret, frame = cap.read()
 
     if ret:
+        # if opt.rotate:
         frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
         yoloOutput = detector.detect(frame)
         sinOutput = sign_detector.detect_sign(frame)
@@ -105,16 +100,28 @@ while(cap.isOpened()):
             plot_one_box(xyxy, frame, label=obj['label'], color=colors_signs[sign['cls']], line_thickness=3)
         
         # Saving the output
-        if args.nosave:
+        if opt.save:
             out.write(frame)
         
-        if args.noshow:
+        if not opt.noshow:
             cv2.imshow('frame',frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     else:
         break
+
+    frame_num += 1    
+    sys.stdout.write(
+          "\r[Input Video : %s] [%d/%d Fames Processed] [Saving %s] [Show %s]"
+          % (
+              opt.video,
+              frame_num,
+              frame_count,
+              opt.save,
+              not  opt.noshow
+          )
+      )
     
 cap.release()
-if args.noshow:
+if not opt.noshow:
     cv2.destroyAllWindows()

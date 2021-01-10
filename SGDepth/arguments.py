@@ -15,6 +15,16 @@ class ArgumentsBase(object):
             formatter_class=ArgumentDefaultsHelpFormatter
         )
 
+    def running_args(self):
+        self.ap.add_argument('--weights-detector', type=str, default='weights/yolov5m.pt', help='weights for the main yolo detector')
+        self.ap.add_argument('--weights-sign'    , type=str, default='weights/Best_Sign_Model_TV.pt', help='sign detector weights')
+        self.ap.add_argument('--disp-detector', type=str, default='weights/model_full.pth', help='disparity model weights')
+        self.ap.add_argument('--lane-detector', type=str, default='weights/296_tensor(1.6947)_lane_detection_network.pkl', help='lane detector model')
+        self.ap.add_argument('--video', type=str, default='Rah.mov', help = 'The input video')
+        self.ap.add_argument('--rotate', action = 'store_true', default='Rah.mov', help = 'The input video')
+        self.ap.add_argument('--save', action= 'store_true', help = 'Saving the output video')
+        self.ap.add_argument('--noshow', action= 'store_true', help =  'Do not Show the output frames')
+
     def _harness_init_system(self):
         self.ap.add_argument(
             '--sys-cpu', default=False, action='store_true',
@@ -375,120 +385,15 @@ class ArgumentsBase(object):
         return self.ap.parse_args()
 
 
-class TrainingArguments(ArgumentsBase):
-    DESCRIPTION = 'SGDepth training arguments'
-
-    def __init__(self):
-        super().__init__()
-
-        self._harness_init_system()
-        self._harness_init_model()
-        self._harness_init_depth()
-        self._harness_init_segmentation()
-        self._training_init_train()
-        self._training_init_depth()
-        self._training_init_segmentation()
-        self._training_init_masking()
-
-    def parse(self):
-        opt = self._parse()
-
-        # This option is only useful for evaluation
-        # but required in the harness
-        opt.eval_avg_with_flipped = False
-
-        return opt
-
-
-class DepthEvaluationArguments(ArgumentsBase):
-    DESCRIPTION = 'SGDepth Depth Evaluation'
-
-    def __init__(self):
-        super().__init__()
-
-        self._harness_init_system()
-        self._harness_init_model()
-        self._harness_init_depth()
-        self._eval_init_logging()
-
-    def parse(self):
-        opt = self._parse()
-
-        # These options are required by the StateManager
-        # but are effectively ignored when evaluating so
-        # they can be initialized to arbitrary values
-        opt.train_learning_rate = 0
-        opt.train_scheduler_step_size = 1000
-        opt.train_weight_decay = 0
-        opt.train_weights_init = 'scratch'
-        opt.train_depth_grad_scale = 0
-        opt.train_segmentation_grad_scale = 0
-
-        return opt
-
-
-class SegmentationEvaluationArguments(ArgumentsBase):
-    DESCRIPTION = 'SGDepth Segmentation Evaluation'
-
-    def __init__(self):
-        super().__init__()
-
-        self._harness_init_system()
-        self._harness_init_model()
-        self._harness_init_segmentation()
-        self._eval_init_logging()
-
-    def parse(self):
-        opt = self._parse()
-
-        # These options are required by the StateManager
-        # but are effectively ignored when evaluating so
-        # they can be initialized to arbitrary values
-        opt.train_learning_rate = 0
-        opt.train_scheduler_step_size = 1000
-        opt.train_weight_decay = 0
-        opt.train_weights_init = 'scratch'
-        opt.train_depth_grad_scale = 0
-        opt.train_segmentation_grad_scale = 0
-
-        return opt
-
-
-class PoseEvaluationArguments(ArgumentsBase):
-    DESCRIPTION = 'SGDepth Depth Evaluation'
-
-    def __init__(self):
-        super().__init__()
-
-        self._harness_init_system()
-        self._harness_init_model()
-        self._harness_init_pose()
-        self._eval_init_logging()
-
-    def parse(self):
-        opt = self._parse()
-
-        # These options are required by the StateManager
-        # but are effectively ignored when evaluating so
-        # they can be initialized to arbitrary values
-        opt.train_learning_rate = 0
-        opt.train_scheduler_step_size = 1000
-        opt.train_weight_decay = 0
-        opt.train_weights_init = 'scratch'
-        opt.train_depth_grad_scale = 0
-        opt.train_segmentation_grad_scale = 0
-
-        return opt
-
-
 class InferenceEvaluationArguments(ArgumentsBase):
     DESCRIPTION = 'SGDepth Segmentation Inference'
 
     def __init__(self):
         super().__init__()
-
+        self.running_args()
         self._harness_init_system()
         self._harness_init_model()
+        
         # self._harness_init_segmentation()
         # self._eval_init_logging()
         self._inference()
@@ -505,5 +410,6 @@ class InferenceEvaluationArguments(ArgumentsBase):
         opt.train_weights_init = 'scratch'
         opt.train_depth_grad_scale = 0
         opt.train_segmentation_grad_scale = 0
+
 
         return opt
