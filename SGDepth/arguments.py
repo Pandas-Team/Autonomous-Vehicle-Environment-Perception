@@ -24,6 +24,9 @@ class ArgumentsBase(object):
         self.ap.add_argument('--rotate', action = 'store_true', default='Rah.mov', help = 'The input video')
         self.ap.add_argument('--save', action= 'store_true', help = 'Saving the output video')
         self.ap.add_argument('--noshow', action= 'store_true', help =  'Do not Show the output frames')
+        self.ap.add_argument('--frame-drop', type = int, default = 1 , help =  'Frame Drop for processing')
+        self.ap.add_argument('--outputfps', type = int, default = 30 , help =  'Output Video FPS')
+        self.ap.add_argument('--fps', action = 'store_true' , help =  'Show fps')
 
     def _harness_init_system(self):
         self.ap.add_argument(

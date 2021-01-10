@@ -2,3 +2,4 @@ weights/
 *.pt
 *.mp4
 *.mov
+*.npy

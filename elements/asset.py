@@ -31,10 +31,13 @@ def apply_mask1(image, seg_img, color = [244, 35, 232], alpha=0.5):
 def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
 
     img = image.copy()
-    np.save('img.npy', img)
+    # print(seg_img.shape)
+    # print(seg_img.dtype)
+    # np.save('img.npy', img)
     np.save('seg.npy',seg_img)
 
-
+    # img = np.load('img.npy')
+    seg_img = np.load('seg.npy')
     mask = (seg_img == np.array([244, 35, 232]))[...,1].astype('uint8')
     contours, _ = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
@@ -44,7 +47,7 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
     n = len(cnts)
 
     if n < 5:
-        for i in range(n):
+        for i in range(2):
             cv2.drawContours(canvas, cnts, i,  (0,255,0), -1, cv2.LINE_AA)
     else:
         for i in range(2):

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import json
+from time import time as t
 import datetime
 import random
 import sys
@@ -29,7 +30,7 @@ sign_detector = YOLO_Sign(opt.weights_sign)
 #Video Writer
 cap = cv2.VideoCapture(opt.video)
 frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-print(frame_count)
+# print(frame_count)
 
 if opt.save:
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -37,7 +38,7 @@ if opt.save:
 
     out = cv2.VideoWriter('filename.mov',  
                             cv2.VideoWriter_fourcc(*'mp4v'), 
-                            30, (int(h), int(w)))
+                            opt.outputfps, (int(h), int(w)))
 
 names = {
         'person': 0,
@@ -52,20 +53,26 @@ signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
 
 frame_num = 0
+frame_drop = 30
 while(cap.isOpened()):
+    
     ret, frame = cap.read()
+    frame_num += 1 
+    if not frame_num% opt.frame_drop ==0:
+        continue
 
     if ret:
+        t1 = t() #Start Time
         # if opt.rotate:
         frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
         yoloOutput = detector.detect(frame)
-        sinOutput = sign_detector.detect_sign(frame)
+        signOutput = sign_detector.detect_sign(frame)
         frame = lane_detector.Testing(frame)        
         disparity, seg_img = disparity_detector.inference(frame)
 
+
         frame = apply_mask(frame, seg_img)
 
-        # plotting Yolo Ouput
         for obj in yoloOutput:
             coloraaaa = [255,0,0]
             xyxy = [obj['bbox'][0][0], obj['bbox'][0][1], obj['bbox'][1][0], obj['bbox'][1][1]]
@@ -92,10 +99,16 @@ while(cap.isOpened()):
             else:
                 plot_one_box(xyxy, frame, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
 
-        for sign in sinOutput:
+        for sign in signOutput:
             xyxy = [sign['bbox'][0][0], sign['bbox'][0][1], sign['bbox'][1][0], sign['bbox'][1][1]]
-            plot_one_box(xyxy, frame, label=obj['label'], color=colors_signs[sign['cls']], line_thickness=3)
+            plot_one_box(xyxy, frame, label=sign['label'], color=colors_signs[sign['cls']], line_thickness=3)
         
+        t2 = t() #End of frame time
+        fps = np.round(1 / (t2-t1) , 3)   #Running FPS
+        s = "FPS : "+ str(fps)
+        if opt.fps:
+            cv2.putText(frame, s, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), thickness= 2)
+
         # Saving the output
         if opt.save:
             out.write(frame)
@@ -107,15 +120,18 @@ while(cap.isOpened()):
     else:
         break
 
-    frame_num += 1    
+    # t2 = t() #End of frame time
+    # fps = np.round(1 / (t2-t1) , 3)   #Running FPS
+    # cv2.putText(img, s, (0, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0))
     sys.stdout.write(
-          "\r[Input Video : %s] [%d/%d Fames Processed] [Saving %s] [Show %s]"
+          "\r[Input Video : %s] [%d/%d Fames Processed] [Saving %s] [Show %s] [FPS : %f]"
           % (
               opt.video,
               frame_num,
               frame_count,
               opt.save,
-              not  opt.noshow
+              not  opt.noshow,
+              fps
           )
       )
     
