@@ -15,7 +15,12 @@ def horiz_lines(input_frame, out_image):
     try:
         np.seterr(divide='ignore', invalid='ignore')
         frame = input_frame.copy()
+        #mode1
         mask = cv2.inRange(frame, np.array([70,70,90]), np.array([165,140,135]))
+        #mode2
+        mask = cv2.inRange(frame, np.array([50,65,90]), np.array([135,205,170]))
+        #mode3
+        mask = cv2.inRange(frame, np.array([180,180,180]), np.array([255,255,255]))
         roi = mask[560:, 230:1100]
         lines = detect_lines(roi)
         lines = lines.reshape(-1,2,2)
