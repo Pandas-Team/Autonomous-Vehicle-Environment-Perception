@@ -2,7 +2,7 @@ from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
 from elements.Curvlane import CurveLane
-from elements.asset import cityscape_xyz, kitti_xyz, apply_mask
+from elements.asset import cityscape_xyz, kitti_xyz, apply_mask, ROI
 from utils.plots import plot_one_box
 import matplotlib.pyplot as plt
 from elements.asset import horiz_lines, detect_lines
@@ -29,7 +29,7 @@ if opt.lane_detector_type == 'culane':
     print("CULane model loaded!")
 if opt.lane_detector_type == 'curvelane':
     lane_detector = CurveLane(opt.curvelane_model)
-    print("Curvelane model loaded!)
+    print("Curvelane model loaded!")
 
 disparity_detector = Inference(opt.disp_detector)
 sign_detector = YOLO_Sign(opt.weights_sign)
@@ -78,31 +78,37 @@ while(cap.isOpened()):
         disparity, seg_img = disparity_detector.inference(frame)
         frame = lane_detector.Testing(frame)        
 
+
         frame = apply_mask(frame, seg_img)
 
         for obj in yoloOutput:
-            coloraaaa = [255,0,0]
             xyxy = [obj['bbox'][0][0], obj['bbox'][0][1], obj['bbox'][1][0], obj['bbox'][1][1]]
             
             if obj['label'] =='car' or obj['label'] == 'truck' or obj['label'] == 'bus':
                 x_pts = (obj['bbox'][0][0]+obj['bbox'][1][0])/2
                 y_pts = (obj['bbox'][0][1]+obj['bbox'][1][1])/2
 
-                Ry = 192/720
-                Rx = 640/1280
-                x_new, y_new =(Rx * x_pts, Ry * y_pts)
+                #set the desired area to eliminate bad distances
+                masked_image = ROI(main_frame, x_pts, y_pts)
+                
+                if np.dot(masked_image[int(y_pts), int(x_pts)], main_frame[int(y_pts), int(x_pts)]) != 0:
+                    Ry = 192/720
+                    Rx = 640/1280
+                    x_new, y_new =(Rx * x_pts, Ry * y_pts)
 
-                cropped_disp = np.array(disparity[int(y_new-5): int(y_new+5), int(x_new-5): int(x_new+5)])
-                sorted_value = np.sort(np.ravel(cropped_disp))
-                sorted_value = np.array(sorted_value[int(0.7*len(sorted_value))-1:-1])
-                mean = np.mean(sorted_value)
+                    cropped_disp = np.array(disparity[int(y_new-5): int(y_new+5), int(x_new-5): int(x_new+5)])
+                    sorted_value = np.sort(np.ravel(cropped_disp))
+                    sorted_value = np.array(sorted_value[int(0.7*len(sorted_value))-1:-1])
+                    mean = np.mean(sorted_value)
 
-                x, y, z, distance = kitti_xyz(mean, x_new, y_new)
+                    x, y, z, distance = kitti_xyz(mean, x_new, y_new)
 
-                if distance < 10:
-                    plot_one_box(xyxy, frame, distance, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
+                    if distance < 10:
+                        plot_one_box(xyxy, frame, distance, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
+                    else:
+                        plot_one_box(xyxy, frame, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
                 else:
-                    plot_one_box(xyxy, frame, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
+                        plot_one_box(xyxy, frame, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
             else:
                 plot_one_box(xyxy, frame, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
 
