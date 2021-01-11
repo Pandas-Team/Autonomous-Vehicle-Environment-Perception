@@ -18,6 +18,8 @@ margin = 0
 class YOLO():
     def __init__(self,model_path):
         self.yolo_model = attempt_load(weights=model_path, map_location=device)
+        self.conf_thres = 0.75
+        self.iou_thres = 0.7
 
     def detect(self,left):
         """
@@ -41,7 +43,7 @@ class YOLO():
             img = img.unsqueeze(0)
 
         pred = self.yolo_model(img, augment=False)[0]
-        pred = non_max_suppression(pred, conf_thres=0.65, iou_thres=0.7, classes=None)
+        pred = non_max_suppression(pred, conf_thres=self.conf_thres, iou_thres=self.iou_thres, classes=None)
         items = []
         
         if pred[0] is not None and len(pred):
@@ -91,6 +93,8 @@ margin_sign = 0
 class YOLO_Sign():
     def __init__(self,model_path):
         self.yolo_model = attempt_load(weights=model_path, map_location=device)
+        self.conf_thres = 0.75
+        self.iou_thres = 0.7
 
     def detect_sign(self,left):
         """
@@ -114,7 +118,7 @@ class YOLO_Sign():
             img = img.unsqueeze(0)
 
         pred = self.yolo_model(img, augment=False)[0]
-        pred = non_max_suppression(pred, conf_thres=0.65, iou_thres=0.7, classes=None)
+        pred = non_max_suppression(pred, conf_thres= self.conf_thres, iou_thres=self.iou_thres, classes=None)
         items = []
         
         if pred[0] is not None and len(pred):

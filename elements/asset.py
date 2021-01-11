@@ -110,3 +110,15 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
         img[:,:,c]= np.where(mask_new == 1, img[:,:,c]*(1 - alpha)+alpha*color[c],img[:,:,c])
     return img
 
+
+def ROI(frame, x, y):
+    mask = np.zeros(frame.shape, dtype=np.uint8)
+    roi_corners = np.array([[(180,720), (432,300), (1000,300), (1200,720)]], dtype=np.int32)
+    channel_count = frame.shape[2]
+    ignore_mask_color = (255,)*channel_count
+    cv2.fillPoly(mask, roi_corners, ignore_mask_color)
+    masked_image = cv2.bitwise_and(frame, mask)
+
+    return masked_image
+    
+                
