@@ -75,9 +75,8 @@ while(cap.isOpened()):
         main_frame = frame.copy()
         yoloOutput = detector.detect(frame)
         signOutput = sign_detector.detect_sign(frame)
-        frame = lane_detector.Testing(frame)        
         disparity, seg_img = disparity_detector.inference(frame)
-
+        frame = lane_detector.Testing(frame)        
 
         frame = apply_mask(frame, seg_img)
 
