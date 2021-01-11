@@ -122,7 +122,7 @@ while(cap.isOpened()):
         t2 = t() #End of frame time
         fps = np.round(1 / (t2-t1) , 3)   #Running FPS
         avg_fpg = fps * 0.05 + 0.95 * avg_fpg
-        estimated_time = frame_count / avg_fpg
+        estimated_time = (frame_count - frame_num) / avg_fpg
         estimated_time = str(timedelta(seconds=estimated_time)).split('.')[0]
         s = "FPS : "+ str(fps)
         if opt.fps:
