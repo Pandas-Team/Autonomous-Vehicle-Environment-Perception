@@ -121,9 +121,9 @@ while(cap.isOpened()):
         
         t2 = t() #End of frame time
         fps = np.round(1 / (t2-t1) , 3)   #Running FPS
-        avg_fpg = fps * 0.1 + 0.9 * avg_fpg
+        avg_fpg = fps * 0.05 + 0.95 * avg_fpg
         estimated_time = frame_count / avg_fpg
-        estimated_time = str(timedelta(seconds=estimated_time))
+        estimated_time = str(timedelta(seconds=estimated_time)).split('.')[0]
         s = "FPS : "+ str(fps)
         if opt.fps:
             cv2.putText(frame, s, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), thickness= 2)
