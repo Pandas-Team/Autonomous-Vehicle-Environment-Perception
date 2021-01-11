@@ -1,13 +1,13 @@
 from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
+from elements.Curvlane import CurveLane
 from elements.asset import cityscape_xyz, kitti_xyz, apply_mask
 from utils.plots import plot_one_box
 import matplotlib.pyplot as plt
 from elements.asset import horiz_lines, detect_lines
 import numpy as np
 import cv2
-import json
 from time import time as t
 import datetime
 import random
@@ -22,9 +22,13 @@ if opt.noshow and not opt.save:
     sys.exit()
 
 
-
 detector = YOLO(opt.weights_detector)
-lane_detector = LaneDetection(opt.lane_detector)
+
+if opt.lane_detector_type == 'culane':
+    lane_detector = LaneDetection(opt.culane_model)
+if opt.lane_detector_type == 'curvelane':
+    lane_detector = CurveLane(opt.curvelane_model)
+
 disparity_detector = Inference(opt.disp_detector)
 sign_detector = YOLO_Sign(opt.weights_sign)
 

@@ -19,7 +19,9 @@ class ArgumentsBase(object):
         self.ap.add_argument('--weights-detector', type=str, default='weights/yolov5m.pt', help='weights for the main yolo detector')
         self.ap.add_argument('--weights-sign'    , type=str, default='weights/Best_Sign_Model_TV.pt', help='sign detector weights')
         self.ap.add_argument('--disp-detector', type=str, default='weights/model_full.pth', help='disparity model weights')
-        self.ap.add_argument('--lane-detector', type=str, default='weights/296_tensor(1.6947)_lane_detection_network.pkl', help='lane detector model')
+        self.ap.add_argument('--lane-detector-type', type=str, default='culane', help='Choose between culane or curvelane')
+        self.ap.add_argument('--culane-model', type=str, default='weights/culane_model.pkl', help='Culane model')
+        self.ap.add_argument('--curvelane-model', type=str, default='weights/curvelane_model.pkl', help='Curvelane model')
         self.ap.add_argument('--video', type=str, default='test.mov', help = 'The input video')
         self.ap.add_argument('--rotate', action = 'store_true', default='Rah.mov', help = 'The input video')
         self.ap.add_argument('--save', action= 'store_true', help = 'Saving the output video')
@@ -28,7 +30,6 @@ class ArgumentsBase(object):
         self.ap.add_argument('--outputfps', type = int, default = 30 , help =  'Output Video FPS')
         self.ap.add_argument('--fps', action = 'store_true' , help =  'Show fps')
         self.ap.add_argument('--output-name', type = str ,default = 'output.mov' , help =  'Outputput video address')
-
 
 
     def _harness_init_system(self):
