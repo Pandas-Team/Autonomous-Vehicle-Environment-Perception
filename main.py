@@ -12,6 +12,7 @@ from time import time as t
 import datetime
 import random
 import sys
+from datetime import timedelta
 from SGDepth.arguments import InferenceEvaluationArguments
 
 opt = InferenceEvaluationArguments().parse()
@@ -58,7 +59,7 @@ colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
          'Vorood Mamnoo', 'Mostaghom', 'SL40', 'SL50', 'SL60', 'SL70', 'SL80', 'SL100', 'No U-Turn']
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
-
+avg_fpg = 0 #Average FPS
 frame_num = 0
 frame_drop = 30
 while(cap.isOpened()):
@@ -100,8 +101,10 @@ while(cap.isOpened()):
                     sorted_value = np.sort(np.ravel(cropped_disp))
                     sorted_value = np.array(sorted_value[int(0.7*len(sorted_value))-1:-1])
                     mean = np.mean(sorted_value)
-
-                    x, y, z, distance = kitti_xyz(mean, x_new, y_new)
+                    if opt.depth_mode == 'kitti':
+                        x, y, z, distance = kitti_xyz(mean, x_new, y_new)
+                    else : 
+                        x, y, z, distance = cityscape_xyz(mean, x_new, y_new)
 
                     if distance < 10:
                         plot_one_box(xyxy, frame, distance, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
@@ -118,6 +121,9 @@ while(cap.isOpened()):
         
         t2 = t() #End of frame time
         fps = np.round(1 / (t2-t1) , 3)   #Running FPS
+        avg_fpg = fps * 0.1 + 0.9 * avg_fpg
+        estimated_time = frame_count / avg_fpg
+        estimated_time = str(timedelta(seconds=estimated_time))
         s = "FPS : "+ str(fps)
         if opt.fps:
             cv2.putText(frame, s, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), thickness= 2)
@@ -136,14 +142,13 @@ while(cap.isOpened()):
         break
 
     sys.stdout.write(
-          "\r[Input Video : %s] [%d/%d Frames Processed] [Saving %s] [Show %s] [FPS : %f]"
+          "\r[Input Video : %s] [%d/%d Frames Processed] [FPS : %f] [ET : %s]"
           % (
               opt.video,
               frame_num,
               frame_count,
-              opt.save,
-              not  opt.noshow,
-              fps
+              fps,
+              estimated_time
           )
       )
     

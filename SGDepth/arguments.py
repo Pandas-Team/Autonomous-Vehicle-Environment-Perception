@@ -30,6 +30,7 @@ class ArgumentsBase(object):
         self.ap.add_argument('--outputfps', type = int, default = 30 , help =  'Output Video FPS')
         self.ap.add_argument('--fps', action = 'store_true' , help =  'Show fps')
         self.ap.add_argument('--output-name', type = str ,default = 'output.mov' , help =  'Outputput video address')
+        self.ap.add_argument('--depth-mode', type = str ,default = 'kitti' , help =  'Choosing depth mode (kitti or cityscape)')
 
 
     def _harness_init_system(self):
