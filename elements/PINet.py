@@ -16,22 +16,24 @@ class LaneDetection():
     def __init__(self,model_path):
         self.lane_agent = Agent()
         self.lane_agent.load_weights(model_path)
-    def Testing(self, frame):
+    def Testing(self, frame, mask):
 
         if torch.cuda.is_available():
             self.lane_agent.cuda()
             torch.cuda.synchronize()
             
         frame = cv2.resize(frame, (512,256))/255.0
+        mask = cv2.resize(mask, (512,256))
+
         frame = np.rollaxis(frame, axis=2, start=0)
-        _, _, ti = self.test(self.lane_agent, np.array([frame])) 
+        _, _, ti = self.test(self.lane_agent, np.array([frame]), mask) 
         ti[0] = cv2.resize(ti[0], (1280,720))
     
         return ti[0]
     ############################################################################
     ## test on the input test image
     ############################################################################
-    def test(self, lane_agent, test_images, thresh = p.threshold_point, index= -1):
+    def test(self, lane_agent, test_images, mask, thresh = p.threshold_point, index= -1):
 
         result = lane_agent.predict_lanes_test(test_images)
         if torch.cuda.is_available():
@@ -70,7 +72,7 @@ class LaneDetection():
             # sort points along y 
             in_x, in_y = sort_along_y(in_x, in_y)  
 
-            result_image = draw_points(in_x, in_y, deepcopy(image))
+            result_image = draw_points(in_x, in_y, deepcopy(image), mask)
 
             out_x.append(in_x)
             out_y.append(in_y)

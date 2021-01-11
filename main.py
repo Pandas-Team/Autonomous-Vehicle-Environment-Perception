@@ -65,7 +65,7 @@ frame_drop = 30
 while(cap.isOpened()):
     
     ret, frame = cap.read()
-    frame_num += 1 
+    frame_num += 1
     if not frame_num% opt.frame_drop ==0:
         continue
 
@@ -77,8 +77,10 @@ while(cap.isOpened()):
         yoloOutput = detector.detect(frame)
         signOutput = sign_detector.detect_sign(frame)
         disparity, seg_img = disparity_detector.inference(frame)
-        frame = lane_detector.Testing(frame)        
 
+        #set the desired area to eliminate bad distances
+        masked_image = ROI(main_frame)
+        frame = lane_detector.Testing(frame, masked_image)
 
         frame = apply_mask(frame, seg_img)
 
@@ -89,8 +91,6 @@ while(cap.isOpened()):
                 x_pts = (obj['bbox'][0][0]+obj['bbox'][1][0])/2
                 y_pts = (obj['bbox'][0][1]+obj['bbox'][1][1])/2
 
-                #set the desired area to eliminate bad distances
-                masked_image = ROI(main_frame, x_pts, y_pts)
                 
                 if np.dot(masked_image[int(y_pts), int(x_pts)], main_frame[int(y_pts), int(x_pts)]) != 0:
                     Ry = 192/720
@@ -117,7 +117,7 @@ while(cap.isOpened()):
 
         for sign in signOutput:
             xyxy = [sign['bbox'][0][0], sign['bbox'][0][1], sign['bbox'][1][0], sign['bbox'][1][1]]
-            plot_one_box(xyxy, frame, label=sign['label'], color=colors_signs[sign['cls']], line_thickness=3)
+            plot_one_box(xyxy, frame, label=sign["label"],  color=colors_signs[sign['cls']], line_thickness=3)
         
         t2 = t() #End of frame time
         fps = np.round(1 / (t2-t1) , 3)   #Running FPS
@@ -142,15 +142,15 @@ while(cap.isOpened()):
         break
 
     sys.stdout.write(
-          "\r[Input Video : %s] [%d/%d Frames Processed] [FPS : %f] [ET : %s]"
-          % (
-              opt.video,
-              frame_num,
-              frame_count,
-              fps,
-              estimated_time
-          )
-      )
+        "\r[Input Video : %s] [%d/%d Frames Processed] [FPS : %f] [ET : %s]"
+        % (
+            opt.video,
+            frame_num,
+            frame_count,
+            fps,
+            estimated_time
+        )
+    )
     
 cap.release()
 if not opt.noshow:

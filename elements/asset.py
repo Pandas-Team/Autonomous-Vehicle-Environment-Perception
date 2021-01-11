@@ -57,8 +57,6 @@ def horiz_lines(input_frame, out_image, mode = 1):
     return out_image
 
 
-
-
 #Cityscape information
 def cityscape_xyz(disp, xl, yl, b = 0.22 ,f = 2262):
   z = (b*f)/(disp/1.6)
@@ -91,9 +89,9 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
     img = image.copy()
     # print(seg_img.shape)
     # print(seg_img.dtype)
-    # np.save('img.npy', img)
     try:
-        np.save('seg.npy',seg_img)
+        np.save('img3.npy', img)
+        np.save('seg3.npy',seg_img)
 
         # img = np.load('img.npy')
         seg_img = np.load('seg.npy')
@@ -122,7 +120,7 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
     return img
 
 
-def ROI(frame, x, y):
+def ROI(frame):
     mask = np.zeros(frame.shape, dtype=np.uint8)
     roi_corners = np.array([[(180,720), (432,300), (1000,300), (1200,720)]], dtype=np.int32)
     channel_count = frame.shape[2]

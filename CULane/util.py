@@ -77,14 +77,17 @@ def visualize_regression(image, gt):
     cv2.imshow("image", image)
     cv2.waitKey(0)   
 
-def draw_points(x, y, image):
+def draw_points(x, y, image, mask):
     color_index = 0
+
     for i, j in zip(x, y):
         color_index += 1
         if color_index > 12:
             color_index = 12
         for index in range(len(i)):
-            image = cv2.circle(image, (int(i[index]), int(j[index])), 2, p.color[color_index], -1)
+
+            if np.dot(image[int(j[index]), int(i[index])], mask[int(j[index]), int(i[index])]) != 0:
+                image = cv2.circle(image, (int(i[index]), int(j[index])), 2, p.color[color_index], -1)
 
     return image
 
