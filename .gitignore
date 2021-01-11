@@ -9,3 +9,4 @@ weights/
 *.mp3
 *.ipynb
 *__chache__*
+*.pyc

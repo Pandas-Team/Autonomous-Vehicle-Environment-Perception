@@ -129,7 +129,7 @@ while(cap.isOpened()):
             cv2.putText(frame, s, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), thickness= 2)
         
         #Cross Walk Lines
-        frame = horiz_lines(main_frame, frame)
+        frame = horiz_lines(main_frame, frame, mode = opt.mode)
         # Saving the output
         if opt.save:
             out.write(frame)
