@@ -26,8 +26,10 @@ detector = YOLO(opt.weights_detector)
 
 if opt.lane_detector_type == 'culane':
     lane_detector = LaneDetection(opt.culane_model)
+    print("CULane model loaded!)
 if opt.lane_detector_type == 'curvelane':
     lane_detector = CurveLane(opt.curvelane_model)
+    print("Curvelane model loaded!)
 
 disparity_detector = Inference(opt.disp_detector)
 sign_detector = YOLO_Sign(opt.weights_sign)
