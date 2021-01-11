@@ -123,9 +123,4 @@ def ROI(frame, x, y):
     masked_image = cv2.bitwise_and(frame, mask)
 
     return masked_image
-    
-<<<<<<< HEAD
-                
-=======
-                
->>>>>>> 706fe6942239533c7bd9e55a7a05d2c53dfaf496
+  
