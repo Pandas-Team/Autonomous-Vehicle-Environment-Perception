@@ -8,3 +8,4 @@ weights/
 *.mp4
 *.mp3
 *.ipynb
+*__chache__*
