@@ -7,6 +7,6 @@ weights/
 *.png
 *.mp4
 *.mp3
-*.ipynb
-*__chache__*
-*.pyc
+**/*.ipynb
+**__pychache__**
+**/*.pyc
