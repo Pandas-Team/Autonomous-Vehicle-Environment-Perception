@@ -44,7 +44,7 @@ def horiz_lines(input_frame, out_image):
                     cv2.fillPoly(out_image, pts =[point], color=(0, 255,0))
             if out_points is not None:
                 out_image=cv2.line(out_image, (out_points[0],out_points[1]), (out_points[2],out_points[3]), [0,0,255], 5)
-    exceot:
+    except:
         pass
     return out_image
 
