@@ -7,6 +7,7 @@ from utils.plots import plot_one_box
 import matplotlib.pyplot as plt
 from elements.asset import horiz_lines, detect_lines
 import numpy as np
+import os
 import cv2
 from time import time as t
 import datetime
@@ -40,11 +41,19 @@ cap = cv2.VideoCapture(opt.video)
 frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
 
+
 if opt.save:
+    output_video_folder = os.path.join('outputs/', opt.output_name.split('.')[0])
+    if opt.save_frames:
+        output_frames_folder = os.path.join(output_video_folder, 'frames')
+        os.makedirs(output_frames_folder, exist_ok=True)
+    output_video_name = os.path.join(output_video_folder, opt.output_name)
+    os.makedirs(output_video_folder, exist_ok = True)
+    print(output_video_folder)
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    out = cv2.VideoWriter(opt.output_name,  
+    out = cv2.VideoWriter(output_video_name,  
                             cv2.VideoWriter_fourcc(*'mp4v'), 
                             opt.outputfps, (int(h), int(w)))
 
@@ -148,7 +157,11 @@ while(cap.isOpened()):
         # Saving the output
         if opt.save:
             out.write(frame)
+            if opt.save_frames:
+                cv2.imwrite(os.path.join(output_frames_folder , '{0:04d}.jpg'.format(int(frame_num))) , frame)
         
+
+
         if not opt.noshow:
             cv2.imshow('frame',frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
