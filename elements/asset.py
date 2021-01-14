@@ -94,6 +94,7 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
 
         # img = np.load('img.npy')
         seg_img = np.load('seg.npy')
+        os.remove('seg.npy')
         mask = (seg_img == np.array([244, 35, 232]))[...,1].astype('uint8')
         contours, _ = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 

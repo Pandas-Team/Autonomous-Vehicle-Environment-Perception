@@ -43,13 +43,15 @@ frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
 
 if opt.save:
+    if len(opt.output_name.split('.'))==1:
+        opt.output_name += '.mp4'
     output_video_folder = os.path.join('outputs/', opt.output_name.split('.')[0])
     if opt.save_frames:
         output_frames_folder = os.path.join(output_video_folder, 'frames')
         os.makedirs(output_frames_folder, exist_ok=True)
     output_video_name = os.path.join(output_video_folder, opt.output_name)
     os.makedirs(output_video_folder, exist_ok = True)
-    print(output_video_folder)
+
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
@@ -181,5 +183,6 @@ while(cap.isOpened()):
     )
     
 cap.release()
+os.remove('seg.npy')
 if not opt.noshow:
     cv2.destroyAllWindows()
