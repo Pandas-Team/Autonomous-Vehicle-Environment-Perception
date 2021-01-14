@@ -10,3 +10,4 @@ weights/
 **/*.ipynb
 **__pychache__**
 **/*.pyc
+outputs/

@@ -17,7 +17,7 @@ class ArgumentsBase(object):
 
     def running_args(self):
         self.ap.add_argument('--weights-detector', type=str, default='weights/yolov5m.pt', help='weights for the main yolo detector')
-        self.ap.add_argument('--weights-sign'    , type=str, default='weights/Best_Sign_Model_TV.pt', help='sign detector weights')
+        self.ap.add_argument('--weights-sign'    , type=str, default='weights/best_sign2.pt', help='sign detector weights')
         self.ap.add_argument('--disp-detector', type=str, default='weights/model_full.pth', help='disparity model weights')
         self.ap.add_argument('--lane-detector-type', type=str, default='culane', help='Choose between culane or curvelane')
         self.ap.add_argument('--culane-model', type=str, default='weights/culane_model.pkl', help='Culane model')
@@ -32,6 +32,8 @@ class ArgumentsBase(object):
         self.ap.add_argument('--output-name', type = str ,default = 'output.mov' , help =  'Outputput video address')
         self.ap.add_argument('--depth-mode', type = str ,default = 'kitti' , help =  'Choosing depth mode (kitti or cityscape)')
         self.ap.add_argument('--mode', type = int, default = 1, help = 'Choose theprocessing model (1,2,3)')
+        self.ap.add_argument('--save-frames', action = 'store_true' , help =  'Saves individual Frames')
+
 
 
     def _harness_init_system(self):
