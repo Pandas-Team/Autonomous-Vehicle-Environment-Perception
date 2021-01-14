@@ -9,6 +9,6 @@ weights/
 *.mp3
 *.pyc
 **/*.ipynb
-**__pychache__**
+**__pycache__**
 **/*.pyc
 outputs/
