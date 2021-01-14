@@ -90,8 +90,8 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
     # print(seg_img.shape)
     # print(seg_img.dtype)
     try:
-        np.save('img3.npy', img)
-        np.save('seg3.npy',seg_img)
+        # np.save('img.npy', img)
+        np.save('seg.npy',seg_img)
 
         # img = np.load('img.npy')
         seg_img = np.load('seg.npy')
