@@ -12,8 +12,6 @@ import glob as glob
 opt = InferenceEvaluationArguments().parse()
 
 class Inference:
-    """Inference without harness or dataloader"""
-
     def __init__(self, model_path):
         self.model_path = model_path
         self.num_classes = 20
@@ -86,6 +84,8 @@ class Inference:
                     self.model = self.model.eval().cuda()  # for inference model should be in eval mode and on gpu
             else:
                 self.model = self.model.eval()
+                
+        print("SGD model loaded!")
 
     def load_image(self, frame):
 

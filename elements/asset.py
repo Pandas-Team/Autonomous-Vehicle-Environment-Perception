@@ -87,11 +87,9 @@ def apply_mask1(image, seg_img, color = [244, 35, 232], alpha=0.5):
 def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
 
     img = image.copy()
-    # print(seg_img.shape)
-    # print(seg_img.dtype)
     try:
-        np.save('img3.npy', img)
-        np.save('seg3.npy',seg_img)
+        # np.save('img3.npy', img)
+        np.save('seg.npy',seg_img)
 
         # img = np.load('img.npy')
         seg_img = np.load('seg.npy')
@@ -130,3 +128,26 @@ def ROI(frame):
 
     return masked_image
   
+def kitti_xyz_dist(disp, b = 0.5707 ,f = 645.24):
+    dist = []
+    for data in disp:
+        
+        z = (b*f)/(data[2]/1.6)
+        x = (data[0]*z)/f
+        y = (data[1]*z)/f
+
+        dist.append(np.sqrt(x**2+y**2+z**2))
+    
+    return dist
+
+def cityscape_xyz_dist(disp, b = 0.22 ,f = 2262):
+    dist = []
+    for data in disp:
+        
+        z = (b*f)/(data[2]/1.6)
+        x = (data[0]*z)/f
+        y = (data[1]*z)/f
+
+        dist.append(np.sqrt(x**2+y**2+z**2))
+    
+    return dist

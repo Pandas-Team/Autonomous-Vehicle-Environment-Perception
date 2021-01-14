@@ -2,7 +2,7 @@ from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
 from elements.Curvlane import CurveLane
-from elements.asset import cityscape_xyz, kitti_xyz, apply_mask, ROI
+from elements.asset import cityscape_xyz, kitti_xyz, apply_mask, ROI, kitti_xyz_dist, cityscape_xyz_dist
 from utils.plots import plot_one_box
 import matplotlib.pyplot as plt
 from elements.asset import horiz_lines, detect_lines
@@ -38,7 +38,7 @@ sign_detector = YOLO_Sign(opt.weights_sign)
 #Video Writer
 cap = cv2.VideoCapture(opt.video)
 frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-# print(frame_count)
+
 
 if opt.save:
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -73,11 +73,13 @@ while(cap.isOpened()):
         t1 = t() #Start Time
         # if opt.rotate:
         frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
         main_frame = frame.copy()
         yoloOutput = detector.detect(frame)
         signOutput = sign_detector.detect_sign(frame)
         disparity, seg_img = disparity_detector.inference(frame)
-
+        
         #set the desired area to eliminate bad distances
         masked_image = ROI(main_frame)
         frame = lane_detector.Testing(frame, masked_image)
@@ -86,7 +88,7 @@ while(cap.isOpened()):
 
         for obj in yoloOutput:
             xyxy = [obj['bbox'][0][0], obj['bbox'][0][1], obj['bbox'][1][0], obj['bbox'][1][1]]
-            
+            depth = []
             if obj['label'] =='car' or obj['label'] == 'truck' or obj['label'] == 'bus':
                 x_pts = (obj['bbox'][0][0]+obj['bbox'][1][0])/2
                 y_pts = (obj['bbox'][0][1]+obj['bbox'][1][1])/2
@@ -97,17 +99,30 @@ while(cap.isOpened()):
                     Rx = 640/1280
                     x_new, y_new =(Rx * x_pts, Ry * y_pts)
 
-                    cropped_disp = np.array(disparity[int(y_new-5): int(y_new+5), int(x_new-5): int(x_new+5)])
-                    sorted_value = np.sort(np.ravel(cropped_disp))
-                    sorted_value = np.array(sorted_value[int(0.7*len(sorted_value))-1:-1])
-                    mean = np.mean(sorted_value)
-                    if opt.depth_mode == 'kitti':
-                        x, y, z, distance = kitti_xyz(mean, x_new, y_new)
-                    else : 
-                        x, y, z, distance = cityscape_xyz(mean, x_new, y_new)
+                    cropped_img = main_frame[xyxy[1]:xyxy[3], xyxy[0]:xyxy[2]]
+                    cropped_disp = np.array(disparity[int(xyxy[1]*Ry):int(xyxy[3]*Ry), int(xyxy[0]*Rx):int(xyxy[2]*Rx)]) 
+                    cropped_img = cv2.resize(cropped_img, (cropped_disp.shape[1], cropped_disp.shape[0]))
+                    cropped_img = cropped_img[int(cropped_img.shape[0]/2 - 20): int(cropped_img.shape[0]/2 + 20),
+                                            int(cropped_img.shape[1]/2 - 20): int(cropped_img.shape[1]/2 + 20)]
 
-                    if distance < 10:
-                        plot_one_box(xyxy, frame, distance, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
+                    indices = np.where(cropped_img!= [0])
+                    coordinates = zip(indices[0], indices[1])
+
+                    for x,y in coordinates:
+                        try:
+                            depth.append([x, y, cropped_disp[y,x]])
+                        except:
+                            pass
+                    
+                    if opt.depth_mode == 'kitti':
+                        distance = kitti_xyz_dist(depth)
+                    else : 
+                        distance = cityscape_xyz_dist(depth)
+
+                    printed_distance = np.mean(np.array(sorted(distance)[:15]))
+
+                    if  printed_distance < 10:
+                        plot_one_box(xyxy, frame, printed_distance, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
                     else:
                         plot_one_box(xyxy, frame, label=obj['label'], color=colors[names[obj['label']]], line_thickness=3)
                 else:
