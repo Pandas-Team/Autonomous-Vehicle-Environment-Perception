@@ -17,7 +17,7 @@ def classic_distance(image, pts):
 		[0, maxHeight - 1]], dtype = "float32")
 	M = cv2.getPerspectiveTransform(pts, dst)
 	warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-	ppm=51.31
+	ppm=100
 	distance = (warped.shape[0]/ppm)
 	return distance
 
@@ -63,8 +63,6 @@ def horiz_lines(input_frame, out_image, mode = 1):
             ymin,ymax = y.astype(int)
             out_points = np.array([xmin,ymin,xmax,ymax])
 
-            test_img = np.zeros_like(mask)
-            test_img[560:, 230:1100] = mask[560:, 230:1100]
             points,_ = cv2.findContours(test_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             for point in points:
                 if cv2.contourArea(point)>2500:
