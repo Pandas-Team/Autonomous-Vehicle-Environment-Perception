@@ -18,7 +18,6 @@ from SGDepth.arguments import InferenceEvaluationArguments
 
 opt = InferenceEvaluationArguments().parse()
 
-
 if opt.noshow and not opt.save:
     print("You're not getting any outputs!!\nExit")
     sys.exit()
@@ -72,7 +71,7 @@ signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
 avg_fpg = 0 #Average FPS
 frame_num = 0
-frame_drop = 30
+
 while(cap.isOpened()):
     
     ret, frame = cap.read()
