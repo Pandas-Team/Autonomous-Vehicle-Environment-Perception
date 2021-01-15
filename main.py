@@ -69,7 +69,7 @@ colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
          'Vorood Mamnoo', 'Mostaghom', 'SL40', 'SL50', 'SL60', 'SL70', 'SL80', 'SL100', 'No U-Turn']
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
-avg_fpg = 0 #Average FPS
+avg_fps = 0 #Average FPS
 frame_num = 0
 
 while(cap.isOpened()):
@@ -146,8 +146,8 @@ while(cap.isOpened()):
         
         t2 = t() #End of frame time
         fps = np.round(1 / (t2-t1) , 3)   #Running FPS
-        avg_fpg = fps * 0.05 + 0.95 * avg_fpg
-        estimated_time = (frame_count - frame_num) / avg_fpg
+        avg_fps = fps * 0.05 + 0.95 * avg_fps
+        estimated_time = (frame_count - frame_num) / avg_fps
         estimated_time = str(timedelta(seconds=estimated_time)).split('.')[0]
         s = "FPS : "+ str(fps)
         if opt.fps:
