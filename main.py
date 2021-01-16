@@ -103,7 +103,7 @@ while(cap.isOpened()):
                 x_pts = (obj['bbox'][0][0]+obj['bbox'][1][0])/2
                 y_pts = (obj['bbox'][0][1]+obj['bbox'][1][1])/2
 
-                
+                #ِDistance Measurement
                 if np.dot(masked_image[int(y_pts), int(x_pts)], main_frame[int(y_pts), int(x_pts)]) != 0:
                     Ry = 192/720
                     Rx = 640/1280

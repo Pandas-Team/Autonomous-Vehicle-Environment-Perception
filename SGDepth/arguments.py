@@ -22,7 +22,7 @@ class ArgumentsBase(object):
         self.ap.add_argument('--lane-detector-type', type=str, default='culane', help='Choose between culane or curvelane')
         self.ap.add_argument('--culane-model', type=str, default='weights/culane_model.pkl', help='Culane model')
         self.ap.add_argument('--curvelane-model', type=str, default='weights/curvelane_model.pkl', help='Curvelane model')
-        self.ap.add_argument('--video', type=str, default='test2.mp4', help = 'The input video')
+        self.ap.add_argument('--video', type=str, default='test.mov', help = 'The input video')
         self.ap.add_argument('--rotate', action = 'store_true', default='Rah.mov', help = 'The input video')
         self.ap.add_argument('--save', action= 'store_true', help = 'Saving the output video')
         self.ap.add_argument('--noshow', action= 'store_true', help =  'Do not Show the output frames')
