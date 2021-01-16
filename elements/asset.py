@@ -134,7 +134,7 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
         for c in range(3):
             img[:,:,c]= np.where(mask_new == 1, img[:,:,c]*(1 - alpha)+alpha*color[c],img[:,:,c])
     except:
-        print('Exception')
+        # print('Exception')
         pass
     return img
 
