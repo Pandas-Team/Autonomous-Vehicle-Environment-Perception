@@ -62,7 +62,8 @@ def horiz_lines(input_frame, out_image, mode = 1):
             xmin,xmax = x
             ymin,ymax = y.astype(int)
             out_points = np.array([xmin,ymin,xmax,ymax])
-
+            test_img = np.zeros_like(mask)	
+            test_img[560:, 230:1100] = mask[560:, 230:1100]
             points,_ = cv2.findContours(test_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             for point in points:
                 if cv2.contourArea(point)>2500:
