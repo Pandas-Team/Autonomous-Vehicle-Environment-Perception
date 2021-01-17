@@ -94,7 +94,7 @@ margin_sign = 0
 class YOLO_Sign():
     def __init__(self,model_path):
         self.yolo_model = attempt_load(weights=model_path, map_location=device)
-        print("Sign Detection model loaded!")
+        print("Sig Detection model loaded!")
         self.conf_thres = 0.75
         self.iou_thres = 0.7
 

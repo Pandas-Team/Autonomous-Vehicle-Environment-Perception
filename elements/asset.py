@@ -1,25 +1,6 @@
 import numpy as np
 import cv2
 
-def classic_distance(image, pts):
-	pts = pts.astype(dtype = "float32")
-	(tl, tr, br, bl) = pts
-	widthA = np.sqrt(((br[0] - bl[0]) * 2) + ((br[1] - bl[1]) * 2))
-	widthB = np.sqrt(((tr[0] - tl[0]) * 2) + ((tr[1] - tl[1]) * 2))
-	maxWidth = max(int(widthA), int(widthB))
-	heightA = np.sqrt(((tr[0] - br[0]) * 2) + ((tr[1] - br[1]) * 2))
-	heightB = np.sqrt(((tl[0] - bl[0]) * 2) + ((tl[1] - bl[1]) * 2))
-	maxHeight = max(int(heightA), int(heightB))
-	dst = np.array([
-		[0, 0],
-		[maxWidth - 1, 0],
-		[maxWidth - 1, maxHeight - 1],
-		[0, maxHeight - 1]], dtype = "float32")
-	M = cv2.getPerspectiveTransform(pts, dst)
-	warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-	ppm=100
-	distance = (warped.shape[0]/ppm)
-	return distance
 
 def detect_lines(image):
     rho = 1  # precision in pixel, i.e. 1 pixel
@@ -62,7 +43,8 @@ def horiz_lines(input_frame, out_image, mode = 1):
             xmin,xmax = x
             ymin,ymax = y.astype(int)
             out_points = np.array([xmin,ymin,xmax,ymax])
-            test_img = np.zeros_like(mask)	
+
+            test_img = np.zeros_like(mask)
             test_img[560:, 230:1100] = mask[560:, 230:1100]
             points,_ = cv2.findContours(test_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             for point in points:
@@ -102,17 +84,12 @@ def apply_mask1(image, seg_img, color = [244, 35, 232], alpha=0.5):
         img[:,:,c]= np.where(mask == 1, img[:,:,c]*(1 - alpha)+alpha*color[c],img[:,:,c])
     return img
 
-def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
-
-    img = image.copy()
+def apply_mask(image, seg_img, masked_image, color = [244, 35, 232], alpha=0.5):
     try:
-        # np.save('img3.npy', img)
-        # np.save('img.npy', img)
+        img = image.copy()
         np.save('seg.npy',seg_img)
-
-        # img = np.load('img.npy')
         seg_img = np.load('seg.npy')
-        # os.remove('seg.npy')
+
         mask = (seg_img == np.array([244, 35, 232]))[...,1].astype('uint8')
         contours, _ = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
@@ -130,11 +107,12 @@ def apply_mask(image, seg_img, color = [244, 35, 232], alpha=0.5):
 
         mask_new = (canvas == np.array([0, 255, 0]))[...,1].astype('uint8')
         mask_new = (cv2.resize(mask_new, (img.shape[1], img.shape[0])))
+        masked_image = cv2.bitwise_and(masked_image, masked_image, mask =mask_new)
+        mask = (masked_image > 0)[...,1].astype('uint8')
 
         for c in range(3):
-            img[:,:,c]= np.where(mask_new == 1, img[:,:,c]*(1 - alpha)+alpha*color[c],img[:,:,c])
+            img[:,:,c]= np.where(mask == 1, img[:,:,c]*(1 - alpha)+alpha*color[c],img[:,:,c])
     except:
-        # print('Exception')
         pass
     return img
 
