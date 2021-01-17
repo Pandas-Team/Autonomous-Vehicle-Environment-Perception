@@ -43,6 +43,8 @@ frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
 
 if opt.save:
+    if len(opt.output_name.split('.'))==1:
+        opt.output_name += '.mp4'
     output_video_folder = os.path.join('outputs/', opt.output_name.split('.')[0])
     if opt.save_frames:
         output_frames_folder = os.path.join(output_video_folder, 'frames')
@@ -70,7 +72,7 @@ signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
 avg_fpg = 0 #Average FPS
 frame_num = 0
-frame_drop = 30
+
 while(cap.isOpened()):
     
     ret, frame = cap.read()
@@ -102,7 +104,7 @@ while(cap.isOpened()):
                 x_pts = (obj['bbox'][0][0]+obj['bbox'][1][0])/2
                 y_pts = (obj['bbox'][0][1]+obj['bbox'][1][1])/2
 
-                
+                #ِDistance Measurement
                 if np.dot(masked_image[int(y_pts), int(x_pts)], main_frame[int(y_pts), int(x_pts)]) != 0:
                     Ry = 192/720
                     Rx = 640/1280
@@ -145,8 +147,8 @@ while(cap.isOpened()):
         
         t2 = t() #End of frame time
         fps = np.round(1 / (t2-t1) , 3)   #Running FPS
-        avg_fpg = fps * 0.05 + 0.95 * avg_fpg
-        estimated_time = (frame_count - frame_num) / avg_fpg
+        avg_fps = fps * 0.05 + 0.95 * avg_fps
+        estimated_time = (frame_count - frame_num) / avg_fps
         estimated_time = str(timedelta(seconds=estimated_time)).split('.')[0]
         s = "FPS : "+ str(fps)
         if opt.fps:
@@ -181,5 +183,7 @@ while(cap.isOpened()):
     )
     
 cap.release()
+os.remove('seg.npy')
+
 if not opt.noshow:
     cv2.destroyAllWindows()
