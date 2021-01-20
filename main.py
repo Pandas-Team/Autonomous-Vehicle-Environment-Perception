@@ -94,8 +94,8 @@ while(cap.isOpened()):
         #set the desired area to eliminate bad distances
         masked_image = ROI(main_frame)
         frame = lane_detector.Testing(frame, masked_image)
-
-        frame = apply_mask(frame, seg_img, masked_image)
+        if opt.mode != 2:
+            frame = apply_mask(frame, seg_img, masked_image)
 
         for obj in yoloOutput:
             xyxy = [obj['bbox'][0][0], obj['bbox'][0][1], obj['bbox'][1][0], obj['bbox'][1][1]]
