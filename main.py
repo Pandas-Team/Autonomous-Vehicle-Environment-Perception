@@ -70,7 +70,7 @@ colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',
          'Vorood Mamnoo', 'Mostaghom', 'SL40', 'SL50', 'SL60', 'SL70', 'SL80', 'SL100', 'No U-Turn']
 colors_signs = [[random.randint(0, 255) for _ in range(3)] for _ in signs]
-avg_fpg = 0 #Average FPS
+avg_fps = 0 #Average FPS
 frame_num = 0
 
 while(cap.isOpened()):
