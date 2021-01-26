@@ -64,7 +64,8 @@ names = {
         'car' : 1,
         'bus': 2,
         'truck' : 3,
-        'traffic light' : 4}
+        'traffic light' : 4,
+        'stop sign' : 5}
 colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
 
 signs = ['Taghadom', 'Chap Mamnoo', 'Rast Mamnoo', 'SL30', 'Tavaghof Mamnoo',

@@ -12,7 +12,8 @@ classes = {0: 'person',
            2: 'car',
            5: 'bus',
            7: 'truck',
-           9: 'traffic light'}
+           9: 'traffic light',
+           11: 'stop sign'}
 margin = 0
 
 class YOLO():
