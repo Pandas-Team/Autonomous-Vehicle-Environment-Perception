@@ -16,6 +16,7 @@ import sys
 from datetime import timedelta
 from SGDepth.arguments import InferenceEvaluationArguments
 
+
 opt = InferenceEvaluationArguments().parse()
 
 
