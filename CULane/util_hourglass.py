@@ -1,13 +1,5 @@
-#########################################################################
-##
-## Some utility for training, data processing, and network.
-##
-#########################################################################
 import torch
 import torch.nn as nn
-from CULane.parameters import Parameters
-
-p = Parameters()
 
 def backward_hook(self, grad_input, grad_output):
     print('grad_input norm:', grad_input[0].data.norm())
@@ -270,6 +262,8 @@ class resize_layer(nn.Module):
 class hourglass_block(nn.Module):
     def __init__(self, in_channels, out_channels, acti = True, input_re=True):
         super(hourglass_block, self).__init__()
+        self.feature_size = 4 
+
         self.layer1 = hourglass_same(in_channels, out_channels)
         self.re1 = bottleneck_dilation(out_channels, out_channels)
         self.re2 = nn.Conv2d(out_channels, out_channels, 1, padding=0, stride=1, bias=True, dilation=1)
@@ -277,7 +271,7 @@ class hourglass_block(nn.Module):
 
         self.out_confidence = Output(out_channels, 1)     
         self.out_offset = Output(out_channels, 2)      
-        self.out_instance = Output(out_channels, p.feature_size)
+        self.out_instance = Output(out_channels, self.feature_size)
 
         self.bn1 = nn.BatchNorm2d(out_channels) 
         self.bn2 = nn.BatchNorm2d(out_channels) 
