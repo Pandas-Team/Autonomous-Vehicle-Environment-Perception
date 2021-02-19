@@ -9,7 +9,7 @@ from torch.autograd import Function as F
 from CurveLanes.parameters import Parameters
 import math
 import CurveLanes.util
-from CurveLanes.hard_sampling import hard_sampling
+# from CurveLanes.hard_sampling import hard_sampling
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

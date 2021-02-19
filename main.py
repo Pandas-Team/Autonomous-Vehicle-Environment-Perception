@@ -185,7 +185,6 @@ while(cap.isOpened()):
     )
     
 cap.release()
-os.remove('seg.npy')
 
 if not opt.noshow:
     cv2.destroyAllWindows()
