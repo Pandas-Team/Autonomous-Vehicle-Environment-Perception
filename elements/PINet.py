@@ -10,10 +10,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class LaneDetection():
 
     def __init__(self,model_path):
-        self.lane_detection_network = lane_detection_network()
-        self.lane_agent = self.lane_detection_network.load_state_dict(
+        self.lane_agent = lane_detection_network()
+        self.lane_agent.load_state_dict(
             torch.load(model_path, map_location=device),False)
-        
+         
+        self.lane_agent.eval()
+
         self.threshold_point = 0.96 #0.88 #0.93 #0.95 #0.93
         self.threshold_instance = 0.08
         self.x_size = 512
@@ -40,7 +42,7 @@ class LaneDetection():
     def predict_lanes_test(self, inputs):
         inputs = torch.from_numpy(inputs).float() 
         inputs = Variable(inputs).to(device)
-        outputs, features = self.lane_detection_network(inputs)
+        outputs, features = self.lane_agent(inputs)
 
         return outputs
 

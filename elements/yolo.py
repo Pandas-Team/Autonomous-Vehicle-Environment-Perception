@@ -1,10 +1,8 @@
 import torch
 import cv2
 import numpy as np
-from models.experimental import attempt_load
-from utils.general import (
-    check_img_size, non_max_suppression, apply_classifier, scale_coords,
-    xyxy2xywh, strip_optimizer, set_logging)
+from yolov5.models.experimental import attempt_load
+from yolov5.utils.general import non_max_suppression, scale_coords
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -26,7 +24,7 @@ class YOLO():
     def detect(self,left):
         """
             Input :
-                    left BGR image
+                    BGR image
             
                     
             Output:
@@ -34,6 +32,7 @@ class YOLO():
                 {   label   :  str
                     bbox    :  [(xmin,ymin),(xmax,ymax)]
                     score   :  float
+                    cls     :  int
                     }
         """
         img = cv2.resize(left, (640,384))
@@ -102,7 +101,7 @@ class YOLO_Sign():
     def detect_sign(self,left):
         """
             Input :
-                    left BGR image
+                    BGR image
             
                     
             Output:
@@ -110,6 +109,7 @@ class YOLO_Sign():
                 {   label   :  str
                     bbox    :  [(xmin,ymin),(xmax,ymax)]
                     score   :  float
+                    cls     :  int
                     }
         """
         img = cv2.resize(left, (640,384))

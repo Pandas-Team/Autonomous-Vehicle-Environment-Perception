@@ -2,8 +2,7 @@ from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
 from elements.Curvlane import CurveLane
-from elements.asset import cityscape_xyz, kitti_xyz, apply_mask, ROI, kitti_xyz_dist, cityscape_xyz_dist
-from utils.plots import plot_one_box
+from elements.asset import cityscape_xyz, kitti_xyz, apply_mask, ROI, kitti_xyz_dist, cityscape_xyz_dist, plot_one_box
 import matplotlib.pyplot as plt
 from elements.asset import horiz_lines, detect_lines
 import numpy as np
