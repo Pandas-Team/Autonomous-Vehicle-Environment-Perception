@@ -16,7 +16,7 @@ class LaneDetection():
          
         self.lane_agent.eval()
 
-        self.threshold_point = 0.81 #0.88 #0.93 #0.95 #0.93
+        self.threshold_point = 0.96 #0.88 #0.93 #0.95 #0.93
         self.threshold_instance = 0.08
         self.x_size = 512
         self.y_size = 256
