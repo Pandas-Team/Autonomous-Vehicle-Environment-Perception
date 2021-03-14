@@ -154,15 +154,17 @@ while(cap.isOpened()):
         if opt.fps:
             cv2.putText(frame, s, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), thickness= 2)
         
+        
         #Cross Walk Lines
         frame = horiz_lines(main_frame, frame, mode = opt.mode)
+
+
         # Saving the output
         if opt.save:
             out.write(frame)
             if opt.save_frames:
                 cv2.imwrite(os.path.join(output_frames_folder , '{0:04d}.jpg'.format(int(frame_num))) , frame)
         
-
 
         if not opt.noshow:
             cv2.imshow('frame',frame)

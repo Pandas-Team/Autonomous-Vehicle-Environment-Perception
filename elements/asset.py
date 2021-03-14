@@ -121,7 +121,7 @@ def apply_mask(image, seg_img, masked_image, color = [244, 35, 232], alpha=0.5):
         for i in range(2):
             cv2.drawContours(canvas, cnts, i, (0,255,0), -1, cv2.LINE_AA)
     else:
-        cv2.drawContours(canvas, cnts, i, (0,255,0), -1, cv2.LINE_AA)
+        cv2.drawContours(canvas, cnts, -1, (0,255,0), -1, cv2.LINE_AA)
 
     mask_new = (canvas == np.array([0, 255, 0]))[...,1].astype('uint8')
     mask_new = cv2.resize(mask_new, (img.shape[1], img.shape[0]))

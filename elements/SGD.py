@@ -1,15 +1,16 @@
-import time
 from SGDepth.models.sgdepth import SGDepth
-import torch
 from SGDepth.arguments import InferenceEvaluationArguments
+import torch
+import torchvision.transforms as transforms
+import time
 import cv2
 import os
-import torchvision.transforms as transforms
 from PIL import Image
 import numpy as np
 import glob as glob
 
 opt = InferenceEvaluationArguments().parse()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Inference:
     def __init__(self, model_path):
@@ -17,12 +18,6 @@ class Inference:
         self.num_classes = 20
         self.depth_min = opt.model_depth_min
         self.depth_max = opt.model_depth_max
-        self.output_path = opt.output_path
-        self.output_format = opt.output_format
-        # try:
-        #     self.checkpoint_path = os.environ['IFN_DIR_CHECKPOINT']
-        # except KeyError:
-        #     print('No IFN_DIR_CHECKPOINT defined.')
 
         self.labels = (('CLS_ROAD', (128, 64, 128)),
                        ('CLS_SIDEWALK', (244, 35, 232)),
@@ -45,23 +40,9 @@ class Inference:
                        ('CLS_BCYCLE', (119, 11, 32)),
                        )
         
-        sgdepth = SGDepth
 
         with torch.no_grad():
-            # init 'empty' model
-            self.model = sgdepth(
-                opt.model_split_pos, opt.model_num_layers, opt.train_depth_grad_scale,
-                opt.train_segmentation_grad_scale,
-                # opt.train_domain_grad_scale,
-                opt.train_weights_init, opt.model_depth_resolutions, opt.model_num_layers_pose,
-                # opt.model_num_domains,
-                # opt.train_loss_weighting_strategy,
-                # opt.train_grad_scale_weighting_strategy,
-                # opt.train_gradnorm_alpha,
-                # opt.train_uncertainty_eta_depth,
-                # opt.train_uncertainty_eta_seg,
-                # opt.model_shared_encoder_batchnorm_momentum
-            )
+            self.model = SGDepth()
 
             # load weights (copied from state manager)
             state = self.model.state_dict()
@@ -87,6 +68,7 @@ class Inference:
                 
         print("SGD model loaded!")
 
+
     def load_image(self, frame):
 
         self.image = Image.fromarray(frame[...,::-1])
@@ -95,25 +77,15 @@ class Inference:
         resize = transforms.Resize(
             (192, 640))
         image = resize(self.image)  # resize to argument size
-
-        #center_crop = transforms.CenterCrop((opt.inference_crop_height, opt.inference_crop_width))
-        #image = center_crop(image)  # crop to input size
-
         to_tensor = transforms.ToTensor()  # transform to tensor
 
         self.input_image = to_tensor(image)  # save tensor image to self.input_image for saving later
-
         image = self.normalize(self.input_image[:3,:,:])
-
-        if torch.cuda.is_available():
-            image = image.unsqueeze(0).float().cuda()
-        else:
-            image = image.unsqueeze(0).float()
+        image = image.unsqueeze(0).float().to(device)
 
         # simulate structure of batch:
         image_dict = {('color_aug', 0, 0): image}  # dict
         image_dict[('color', 0, 0)] = image
-        image_dict['domain'] = ['cityscapes_val_seg', ]
         image_dict['purposes'] = [['segmentation', ], ['depth', ]]
         image_dict['num_classes'] = torch.tensor([self.num_classes])
         image_dict['domain_idx'] = torch.tensor(0)
@@ -145,56 +117,53 @@ class Inference:
         segs_pred = segs_pred.numpy()  # transform preds to np array
         segs_pred = segs_pred.argmax(1)  # get the highest score for classes per pixel
 
-        depth_pred, seg_img = self.save_pred_to_disk(segs_pred, disps_pred) # saves results
+        depth_pred, seg_img = self.final_output(segs_pred, disps_pred) # saves results
 
         return depth_pred, seg_img
 
 
-    def save_pred_to_disk(self, segs_pred, depth_pred):
-        ## Segmentation visualization
+    def final_output(self, segs_pred, depth_pred):
         segs_pred = segs_pred[0]
-        o_size = segs_pred.shape
 
         # init of seg image
         seg_img_array = np.zeros((3, segs_pred.shape[0], segs_pred.shape[1]))
 
         # create a color image from the classes for every pixel todo: probably a lot faster if vectorized with numpy
-        i = 0
-        while i < segs_pred.shape[0]:  # for row
-            n = 0
-            while n < segs_pred.shape[1]:  # for column
-                lab = 0
-                while lab < self.num_classes:  # for classes
-                    if segs_pred[i, n] == lab:
-                        # write colors to pixel
-                        seg_img_array[0, i, n] = self.labels[lab][1][0]
-                        seg_img_array[1, i, n] = self.labels[lab][1][1]
-                        seg_img_array[2, i, n] = self.labels[lab][1][2]
-                        break
-                    lab += 1
-                n += 1
-            i += 1
+        # i = 0
+        # while i < segs_pred.shape[0]:  # for row
+        #     n = 0
+        #     while n < segs_pred.shape[1]:  # for column
+        #         lab = 1
+        #         while lab < self.num_classes:  # for classes
+        #             if segs_pred[i, n] == lab:
+        #                 # write colors to pixel
+        #                 seg_img_array[0, i, n] = self.labels[lab][1][0]
+        #                 seg_img_array[1, i, n] = self.labels[lab][1][1]
+        #                 seg_img_array[2, i, n] = self.labels[lab][1][2]
+        #                 break
+        #             lab += 1
+        #         n += 1
+        #     i += 1
+
+        #  create a color image for Side Walk class (244, 35, 232)
+        lab = 1
+        seg_img_array[0, np.where(segs_pred==lab)[0], np.where(segs_pred==lab)[1]] = self.labels[lab][1][0]
+        seg_img_array[1, np.where(segs_pred==lab)[0], np.where(segs_pred==lab)[1]] = self.labels[lab][1][1]
+        seg_img_array[2, np.where(segs_pred==lab)[0], np.where(segs_pred==lab)[1]] = self.labels[lab][1][2]
 
         # scale the color values to 0-1 for proper visualization of OpenCV
         seg_img = seg_img_array.transpose(1, 2, 0).astype(np.uint8)
         seg_img = seg_img[:, :, ::-1 ]
-        
 
-
-        # Depth Visualization
         depth_pred = np.array(depth_pred[0][0].cpu())  # depth predictions to numpy and CPU
-
         depth_pred = self.scale_depth(depth_pred)  # Depthmap in meters
         depth_pred = depth_pred * (255 / depth_pred.max())  # Normalize Depth to 255 = max depth
-
         depth_pred = np.clip(depth_pred, 0, 255)  # Clip to 255 for safety
         
         return depth_pred, seg_img
+
 
     def scale_depth(self, disp):
         min_disp = 1 / self.depth_max
         max_disp = 1 / self.depth_min
         return min_disp + (max_disp - min_disp) * disp
-
-
-
