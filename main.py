@@ -1,10 +1,9 @@
 from elements.yolo import YOLO, YOLO_Sign
 from elements.PINet import LaneDetection
 from elements.SGD import Inference
-from elements.Curvlane import CurveLane
 from elements.asset import cityscape_xyz, kitti_xyz, apply_mask, ROI, kitti_xyz_dist, cityscape_xyz_dist, plot_one_box
-import matplotlib.pyplot as plt
 from elements.asset import horiz_lines, detect_lines
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import cv2
@@ -27,10 +26,10 @@ if opt.noshow and not opt.save:
 detector = YOLO(opt.weights_detector)
 
 if opt.lane_detector_type == 'culane':
-    lane_detector = LaneDetection(opt.culane_model)
+    lane_detector = LaneDetection(opt.culane_model, opt.lane_detector_type)
     print("CULane model loaded!")
 if opt.lane_detector_type == 'curvelane':
-    lane_detector = CurveLane(opt.curvelane_model)
+    lane_detector = LaneDetection(opt.curvelane_model, opt.lane_detector_type)
     print("Curvelane model loaded!")
 
 disparity_detector = Inference(opt.disp_detector)

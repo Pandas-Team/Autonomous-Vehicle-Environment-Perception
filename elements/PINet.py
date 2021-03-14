@@ -2,21 +2,25 @@ import cv2
 import torch
 import numpy as np
 from copy import deepcopy
-from CULane.hourglass_network import lane_detection_network
+from PINet.hourglass_network import lane_detection_network
 from torch.autograd import Variable
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class LaneDetection():
 
-    def __init__(self,model_path):
+    def __init__(self, model_path, model_name):
         self.lane_agent = lane_detection_network()
         self.lane_agent.load_state_dict(
             torch.load(model_path, map_location=device),False)
          
         self.lane_agent.eval()
 
-        self.threshold_point = 0.96 #0.88 #0.93 #0.95 #0.93
+        if model_name == 'culane':
+            self.threshold_point = 0.96 #0.88 #0.93 #0.95 #0.93
+        if model_name == 'curvelane':
+            self.threshold_point = 0.81 #0.35 #0.5 #0.57 #0.64 #0.35
+
         self.threshold_instance = 0.08
         self.x_size = 512
         self.y_size = 256
