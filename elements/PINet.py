@@ -13,6 +13,7 @@ class LaneDetection():
         self.lane_agent = lane_detection_network()
         self.lane_agent.load_state_dict(
             torch.load(model_path, map_location=device),False)
+        self.lane_agent = self.lane_agent.to(device)
         # self.lane_agent.eval()
 
         if model_name == 'culane':
