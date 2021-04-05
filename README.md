@@ -11,7 +11,7 @@ To run the program, first install the requirements using the code below:
 ```
 $ pip install -r requirements.txt
 ```
-Then create a folder named 'weights' in the main directory and download all the weights in [this](https://drive.google.com/drive/folders/1skKYyZMSIAmJv52jrV4kHujjHwfF_Sx4?usp=sharing) shared google drive folder.
+Then create a folder named 'weights' in the main directory and download all the weights in [this](https://drive.google.com/u/0/uc?id=1-MpEWgI-s1V5d6O5iq8cd29yKcrBkO_4&export=download) shared google drive folder.
 
 Then, place your video in the main folder of this repo and then run the following command.
 ```
@@ -31,6 +31,13 @@ $ python main.py --video yourvideoname.mp4 [--save] [--noshow] [--output-name my
 Afterwards, the program starts running and the output video will be saved in the specified directory. To view the output while running, do not use '--no-show' argument.
 
 There you have it.
+
+## Colab Notebook
+You can also use the provided colab notebook to automatically download all the weights and sample video and run the program in a matter of seconds!
+
+simply open the following colab notebook
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Pandas-Team/Autonomous-Vehicle-Environment-Perception/blob/main/Pandas_Team.ipynb)
 
 ## Cited Works
 1. Yolov5 [![DOI](https://zenodo.org/badge/264818686.svg)](https://zenodo.org/badge/latestdoi/264818686)
