@@ -46,3 +46,6 @@ simply open the following colab notebook
 ## Datasets
 1. Traffic-Sign Detection and Classification in the Wild [Link](https://cg.cs.tsinghua.edu.cn/traffic-sign/)
 2. DFG Traffic Sign Data Set [Link](https://www.vicos.si/Downloads/DFGTSD#:~:text=Dataset%20consists%20of%20200%20traffic,around%207000%20high%2Dresolution%20images.&text=The%20images%20have%20been%20anonymized,with%20the%20EU%20GDPR%20legislation.)
+
+## Our Team
+![Pandas6](https://user-images.githubusercontent.com/44018277/113590541-09bb1780-9648-11eb-8c47-9ff7929a7f42.jpg)
