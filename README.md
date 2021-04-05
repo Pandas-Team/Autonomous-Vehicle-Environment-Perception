@@ -48,5 +48,14 @@ simply open the following colab notebook
 2. DFG Traffic Sign Data Set [Link](https://www.vicos.si/Downloads/DFGTSD#:~:text=Dataset%20consists%20of%20200%20traffic,around%207000%20high%2Dresolution%20images.&text=The%20images%20have%20been%20anonymized,with%20the%20EU%20GDPR%20legislation.)
 
 ## Our Team
-
+We as Team Pandas won 1st place in the National Rahneshan competition 2020-2021 for autonomous vehicles. This contest has been one of the most competitive and challenging contests in the Rahneshan tournaments with more than 15 teams competing from top universities in Iran.
 ![Pandas6](https://user-images.githubusercontent.com/44018277/113591619-5e12c700-9649-11eb-805d-dd504081456e.jpg)
+
+### Contact us
+Feel free to contact us via email or connect with us on linkedin.
+
+- Milad Soltany --- [Linkedin](https://www.linkedin.com/in/milad-soltany/), [Email](mailto:soltany.m.99@gmail.com)
+- Abbas Omidi --- [Linkedin](https://www.linkedin.com/in/abbasomidi77/), [Email](mailto:abbasomidi77@gmail.com)
+- Amirhossein Kazerooni ---  [Linkedin](https://www.linkedin.com/in/amirhossein477/), [Email](mailto:Amirhossein477@gmail.com )
+- Amirhossein Heydarian ---  [Linkedin](https://www.linkedin.com/in/amirhosseinh77/), [Email](mailto:amirhossein4633@gmail.com )
+- Aida Mohammadshahi ---  [Linkedin](https://www.linkedin.com/in/aida-mohammadshahi-9845861b3/), [Email](mailto:aidamoshahi@gmail.com)
