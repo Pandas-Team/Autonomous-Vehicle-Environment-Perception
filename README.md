@@ -33,7 +33,7 @@ Afterwards, the program starts running and the output video will be saved in the
 There you have it.
 
 ## Colab Notebook
-You can also use the provided colab notebook to automatically download all the weights and sample video and run the program in a matter of seconds!
+You can also use the provided colab notebook to automatically download all the weights and sample video, and run the program in a matter of seconds!
 
 simply open the following colab notebook
 
