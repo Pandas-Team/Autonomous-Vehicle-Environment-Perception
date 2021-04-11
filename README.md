@@ -42,7 +42,7 @@ simply open the following colab notebook
 ## Cited Works
 1. Yolov5 [![DOI](https://zenodo.org/badge/264818686.svg)](https://zenodo.org/badge/latestdoi/264818686)
 2. SGDepth [GithubRepo](https://github.com/ifnspaml/SGDepth), Also [Paper](https://arxiv.org/abs/2007.06936)
-3. PINet [GithubRepo](https://github.com/koyeongmin/PINet)
+3. PINet [GithubRepo](https://github.com/koyeongmin/PINet_new)
 ## Datasets
 1. Traffic-Sign Detection and Classification in the Wild [Link](https://cg.cs.tsinghua.edu.cn/traffic-sign/)
 2. DFG Traffic Sign Data Set [Link](https://www.vicos.si/Downloads/DFGTSD#:~:text=Dataset%20consists%20of%20200%20traffic,around%207000%20high%2Dresolution%20images.&text=The%20images%20have%20been%20anonymized,with%20the%20EU%20GDPR%20legislation.)
