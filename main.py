@@ -39,6 +39,15 @@ sign_detector = YOLO_Sign(opt.weights_sign)
 cap = cv2.VideoCapture(opt.video)
 frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
+w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+rotate = w<h
+if rotate :
+    h,w = w,h
+resize = not ((w == 1280) and (h == 720))
+print('resize ', resize)
+print('rotate ', rotate)
 
 
 if opt.save:
@@ -82,10 +91,11 @@ while(cap.isOpened()):
 
     if ret:
         t1 = t() #Start Time
-        # if opt.rotate:
-        frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        frame = cv2.resize(frame , (int(1280),int(720)))
-        # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        if rotate:
+            frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+            
+        if resize:
+            frame = cv2.resize(frame , (int(1280),int(720)))
 
         main_frame = frame.copy()
         yoloOutput = detector.detect(frame)
