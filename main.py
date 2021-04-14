@@ -84,6 +84,7 @@ while(cap.isOpened()):
         t1 = t() #Start Time
         # if opt.rotate:
         frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        frame = cv2.resize(frame , (int(1280),int(720)))
         # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
         main_frame = frame.copy()
