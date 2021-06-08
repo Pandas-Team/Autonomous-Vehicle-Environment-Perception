@@ -3,6 +3,10 @@ This repository contains Pandas Team implementation of Autonomous Vehicles Envir
 
 Environment Perception is a crucial asset when it comes to Autonomous Vehicles. The system is required to perceive several entities in its field of view. Said entities include but are not limited to pedestrians, other vehicles,  traffic lights, traffic signs, distance relative to other objects on the road, cross-walks, and side-walks. In this work, we utilize various computer vision methods and algorithms to fulfill the sought-after task.
 
+# Abstract
+In This Project, We Designed and Coded an Environmental Perception System for an Autonomous Vehicle. Applications of This System Include Identifying Pedestrians, Traffic Lights, and Signs, Identifying Vehicles, and Detecting Distances From Them, as well as Identifying Roadside and Pedestrian Lanes. A Variety of Neural Networks and Machine Learning Algorithms as Well as Classical Machine Vision Techniques Such As the Huff Algorithm Have Been Used in This Project.
+
+
 Below You Can See Pictures of the Output:
 
 ![14](https://user-images.githubusercontent.com/61683254/121145468-3b24af00-c854-11eb-8597-1f8d1d64e57f.PNG)
@@ -10,10 +14,6 @@ Below You Can See Pictures of the Output:
 ![11](https://user-images.githubusercontent.com/61683254/121145075-d5382780-c853-11eb-9e69-8b9c3f3add6f.PNG)
 ![12](https://user-images.githubusercontent.com/61683254/121145081-d6695480-c853-11eb-9f87-b0c74bc65f4b.PNG)
 
-
-
-# Abstract
-In This Project, We Designed and Coded an Environmental Perception System for an Autonomous Vehicle. Applications of This System Include Identifying Pedestrians, Traffic Lights, and Signs, Identifying Vehicles, and Detecting Distances From Them, as well as Identifying Roadside and Pedestrian Lanes. A Variety of Neural Networks and Machine Learning Algorithms as Well as Classical Machine Vision Techniques Such As the Huff Algorithm Have Been Used in This Project.
 
 ## Inference
 To run the program, first install the requirements using the code below:
