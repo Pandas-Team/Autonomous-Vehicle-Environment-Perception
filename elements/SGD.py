@@ -2,17 +2,11 @@ from SGDepth.models.sgdepth import SGDepth
 from SGDepth.arguments import InferenceEvaluationArguments
 import torch
 import torchvision.transforms as transforms
-import time
-import cv2
-import os
-from PIL import Image
-import numpy as np
-import glob as glob
 
 opt = InferenceEvaluationArguments().parse()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class Inference:
+class SGDepth_Model:
     def __init__(self, model_path):
         self.model_path = model_path
         self.num_classes = 20
@@ -40,6 +34,7 @@ class Inference:
                        ('CLS_BCYCLE', (119, 11, 32)),
                        )
         
+        self.STEREO_SCALE_FACTOR = 6
 
         with torch.no_grad():
             self.model = SGDepth()
@@ -56,111 +51,61 @@ class Inference:
                 if k not in to_load:
                     # print(f"    - WARNING: Model file does not contain key {k} ({list(v.shape)})")
                     pass
-
                 else:
                     state[k] = to_load[k]
 
             self.model.load_state_dict(state)
             if torch.cuda.is_available():
-                    self.model = self.model.eval().cuda()  # for inference model should be in eval mode and on gpu
+                    self.model = self.model.eval().cuda() 
             else:
                 self.model = self.model.eval()
                 
-        print("SGD model loaded!")
+        print("SGDepth model loaded!")
 
 
     def load_image(self, frame):
+            
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
 
-        self.image = Image.fromarray(frame[...,::-1])
-        self.image_o_width, self.image_o_height = self.image.size
+        transform = torch.nn.Sequential(
+            transforms.Resize((192, 640)),
+            transforms.Normalize(mean, std))
 
-        resize = transforms.Resize(
-            (192, 640))
-        image = resize(self.image)  # resize to argument size
-        to_tensor = transforms.ToTensor()  # transform to tensor
+        frame = transforms.ToTensor()(frame[...,::-1].copy())
+        image = transform(frame)
+        image = image.unsqueeze(0).to(device)
 
-        self.input_image = to_tensor(image)  # save tensor image to self.input_image for saving later
-        image = self.normalize(self.input_image[:3,:,:])
-        image = image.unsqueeze(0).float().to(device)
-
-        # simulate structure of batch:
-        image_dict = {('color_aug', 0, 0): image}  # dict
+        # structure of batch:
+        image_dict = {('color_aug', 0, 0): image}  
         image_dict[('color', 0, 0)] = image
         image_dict['purposes'] = [['segmentation', ], ['depth', ]]
         image_dict['num_classes'] = torch.tensor([self.num_classes])
         image_dict['domain_idx'] = torch.tensor(0)
-        self.batch = (image_dict,)  # batch tuple
-
-
-    def normalize(self, tensor):
-        mean = (0.485, 0.456, 0.406)
-        std = (0.229, 0.224, 0.225)
-
-        normalize = transforms.Normalize(mean, std)
-        tensor = normalize(tensor)
-
-        return tensor
+        self.batch = (image_dict,)
 
 
     def inference(self, frame):
 
-        # load image and transform it in necessary batch format
         self.load_image(frame)
-
+        
         with torch.no_grad():
-            output = self.model(self.batch) # forward pictures
+            output = self.model(self.batch)
 
         disps_pred = output[0]["disp", 0] # depth results
         segs_pred = output[0]['segmentation_logits', 0] # seg results
-
-        segs_pred = segs_pred.exp().cpu()
-        segs_pred = segs_pred.numpy()  # transform preds to np array
-        segs_pred = segs_pred.argmax(1)  # get the highest score for classes per pixel
-
-        depth_pred, seg_img = self.final_output(segs_pred, disps_pred) # saves results
-
-        return depth_pred, seg_img
-
-
-    def final_output(self, segs_pred, depth_pred):
-        segs_pred = segs_pred[0]
-
-        # init of seg image
-        seg_img_array = np.zeros((3, segs_pred.shape[0], segs_pred.shape[1]))
-
-        # create a color image from the classes for every pixel todo: probably a lot faster if vectorized with numpy
-        # i = 0
-        # while i < segs_pred.shape[0]:  # for row
-        #     n = 0
-        #     while n < segs_pred.shape[1]:  # for column
-        #         lab = 1
-        #         while lab < self.num_classes:  # for classes
-        #             if segs_pred[i, n] == lab:
-        #                 # write colors to pixel
-        #                 seg_img_array[0, i, n] = self.labels[lab][1][0]
-        #                 seg_img_array[1, i, n] = self.labels[lab][1][1]
-        #                 seg_img_array[2, i, n] = self.labels[lab][1][2]
-        #                 break
-        #             lab += 1
-        #         n += 1
-        #     i += 1
-
-        #  create a color image for Side Walk class (244, 35, 232)
-        lab = 1
-        seg_img_array[0, np.where(segs_pred==lab)[0], np.where(segs_pred==lab)[1]] = self.labels[lab][1][0]
-        seg_img_array[1, np.where(segs_pred==lab)[0], np.where(segs_pred==lab)[1]] = self.labels[lab][1][1]
-        seg_img_array[2, np.where(segs_pred==lab)[0], np.where(segs_pred==lab)[1]] = self.labels[lab][1][2]
-
-        # scale the color values to 0-1 for proper visualization of OpenCV
-        seg_img = seg_img_array.transpose(1, 2, 0).astype(np.uint8)
-        seg_img = seg_img[:, :, ::-1 ]
-
-        depth_pred = np.array(depth_pred[0][0].cpu())  # depth predictions to numpy and CPU
-        depth_pred = self.scale_depth(depth_pred)  # Depthmap in meters
-        depth_pred = depth_pred * (255 / depth_pred.max())  # Normalize Depth to 255 = max depth
-        depth_pred = np.clip(depth_pred, 0, 255)  # Clip to 255 for safety
         
-        return depth_pred, seg_img
+        seg_img = torch.argmax(segs_pred.exp(), dim=1)
+        depth_pred = self.final_output(disps_pred)
+
+        return depth_pred.cpu().numpy(), seg_img[0].cpu().numpy()
+
+
+    def final_output(self, depth_pred):
+        depth_pred = self.scale_depth(depth_pred[0][0])  # Depthmap in meters
+        depth_pred = self.STEREO_SCALE_FACTOR / depth_pred
+        depth_pred = torch.clip(depth_pred, 0, self.depth_max)
+        return depth_pred
 
 
     def scale_depth(self, disp):

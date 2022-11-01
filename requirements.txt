@@ -1,6 +1,5 @@
 # pip install -r requirements.txt
 
-# base ----------------------------------------
 Cython
 matplotlib>=3.2.2
 numpy>=1.18.5
@@ -8,8 +7,9 @@ opencv-python>=4.1.2
 Pillow
 PyYAML>=5.3
 scipy>=1.4.1
-torch==1.9.1
-torchvision==0.10.1 
+torch>=1.9.1
+torchvision>=0.10.1 
 tqdm>=4.41.0
 seaborn
 pandas
+timm
