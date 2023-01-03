@@ -4,12 +4,21 @@ A significant portion of driving hazards is caused by human error and disregard 
 
 ![overall_diagram](https://user-images.githubusercontent.com/61879630/199366037-69f5a025-73d5-428b-a2de-5742532946d3.jpg)
 
+
+## Citation
+```python
+
+@article{kazerouniintelligent,
+  title={An Intelligent Modular Real-Time Vision-Based System for Environment Perception},
+  author={Kazerouni, Amirhossein and Heydarian, Amirhossein and Soltany, Milad and Mohammadshahi, Aida and Omidi, Abbas and Ebadollahi, Saeed}
+}
+```
+
 ## Updates
 
 - October 20, 2022: Accepted in NeurIPS 2022 Workshop on Machine Learning for Autonomous Driving! :fire:
 - February 5, 2021: Won 1st place in the National Rahneshan competition 2020-2021 for autonomous vehicles! :tada:
 - January 10, 2021: First release.
-
 
 
 ## Results
@@ -69,6 +78,7 @@ Please download from [here](https://drive.google.com/uc?export=download&id=1-bRF
 ### Sign Datasets:
 1. Traffic-Sign Detection and Classification in the Wild [Link](https://cg.cs.tsinghua.edu.cn/traffic-sign/)
 2. DFG Traffic Sign Data Set [Link](https://www.vicos.si/Downloads/DFGTSD#:~:text=Dataset%20consists%20of%20200%20traffic,around%207000%20high%2Dresolution%20images.&text=The%20images%20have%20been%20anonymized,with%20the%20EU%20GDPR%20legislation.)
+
 
 ## Our Team
 We as Team Pandas won 1st place in the National Rahneshan competition 2020-2021 for autonomous vehicles. This contest has been one of the most competitive and challenging contests in the Rahneshan tournaments with more than 15 teams competing from top universities in Iran.
