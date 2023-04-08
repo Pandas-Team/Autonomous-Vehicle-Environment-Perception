@@ -8,10 +8,12 @@ A significant portion of driving hazards is caused by human error and disregard 
 ## Citation
 ```python
 
-@article{kazerouniintelligent,
-  title={An Intelligent Modular Real-Time Vision-Based System for Environment Perception},
-  author={Kazerouni, Amirhossein and Heydarian, Amirhossein and Soltany, Milad and Mohammadshahi, Aida and Omidi, Abbas and Ebadollahi, Saeed}
-}
+@article{kazerouni2023intelligent,
+  title={An intelligent modular real-time vision-based system for environment perception},
+  author={Kazerouni, Amirhossein and Heydarian, Amirhossein and Soltany, Milad and Mohammadshahi, Aida and Omidi, Abbas and Ebadollahi, Saeed},
+  journal={arXiv preprint arXiv:2303.16710},
+  year={2023}
+
 ```
 
 ## Updates
